@@ -1,7 +1,10 @@
 package app;
 
-import ui.components.InfoSymbol;
-import ui.components.TopNav;
+import ui.components.center.MainCenterPanel;
+import ui.components.left.MainLeftPanel;
+import ui.components.top.InfoSymbolPanel;
+import ui.components.top.MainTopPanel;
+import ui.components.top.TopNavPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,13 +18,17 @@ public class MainApp {
 
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        InfoSymbol infoSymbol = new InfoSymbol(new BorderLayout());
+        MainTopPanel mainTopPanel = new MainTopPanel(new BorderLayout());
+        MainLeftPanel mainLeftPanel = new MainLeftPanel(new BorderLayout());
+        MainCenterPanel mainCenterPanel = new MainCenterPanel(new BorderLayout());
 
-        infoSymbol.setPreferredSize(new Dimension(100, 50));
-        infoSymbol.setBackground(Color.RED);
-        TopNav topNav = new TopNav(new BorderLayout());
-        topNav.setPreferredSize(new Dimension(100, 50));
-        topNav.setBackground(Color.CYAN);
+//        InfoSymbolPanel infoSymbolPanel = new InfoSymbolPanel(new BorderLayout());
+//
+//        infoSymbolPanel.setPreferredSize(new Dimension(100, 50));
+//        infoSymbolPanel.setBackground(Color.RED);
+//        TopNavPanel topNavPanel = new TopNavPanel(new BorderLayout());
+//        topNavPanel.setPreferredSize(new Dimension(100, 50));
+//        topNavPanel.setBackground(Color.CYAN);
 
 //        LeftPanel leftPanel = new LeftPanel();
 //
@@ -29,10 +36,13 @@ public class MainApp {
 //        mainPanel.add(rightPanel, BorderLayout.EAST);
 //        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        mainPanel.add(topNav, BorderLayout.NORTH);
-        mainPanel.add(infoSymbol, BorderLayout.SOUTH);
+//        mainPanel.add(topNavPanel, BorderLayout.NORTH);
+//        mainPanel.add(infoSymbolPanel, BorderLayout.SOUTH);
 
-        frame.add(mainPanel);
+        frame.add(mainTopPanel, BorderLayout.NORTH);
+        frame.add(mainLeftPanel, BorderLayout.WEST);
+        frame.add(mainCenterPanel, BorderLayout.CENTER);
+
         frame.setVisible(true);
 //        SwingUtilities.invokeLater(() -> {
 //            CryptoTradingPlatformUI ui = new CryptoTradingPlatformUI();
