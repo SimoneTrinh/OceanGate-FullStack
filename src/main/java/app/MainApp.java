@@ -2,9 +2,7 @@ package app;
 
 import ui.components.center.MainCenterPanel;
 import ui.components.left.MainLeftPanel;
-import ui.components.top.InfoSymbolPanel;
 import ui.components.top.MainTopPanel;
-import ui.components.top.TopNavPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,9 +12,6 @@ public class MainApp {
         JFrame frame = new JFrame("Mixed Layout Demo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1400, 900);
-
-
-        JPanel mainPanel = new JPanel(new BorderLayout());
 
         MainTopPanel mainTopPanel = new MainTopPanel(new BorderLayout());
         MainLeftPanel mainLeftPanel = new MainLeftPanel(new BorderLayout());
