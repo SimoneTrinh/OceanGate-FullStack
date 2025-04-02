@@ -17,7 +17,7 @@ const TVChartContainer = dynamic(
 const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
   library_path: "/static/charting_library/",
   locale: "en",
-  fullscreen: false,
+  fullscreen: true,
   autosize: true,
   theme: "dark"
 };
