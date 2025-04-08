@@ -55,6 +55,7 @@ public class InfoSymbolPanel extends JPanel {
 
     private void renderCommonStat(JPanel panel, String label, String value, Color valueColor) {
         JLabel statLabel = new JLabel(label);
+        valueColor = Color.BLACK; // debugging
         statLabel.setForeground(Color.GRAY);
         statLabel.setFont(statLabel.getFont().deriveFont(12f));
 
