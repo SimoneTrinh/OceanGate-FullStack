@@ -3,13 +3,13 @@ package org.example;
 import javax.swing.*;
 import java.awt.*;
 
-public class CryptoTradingPlatformUI extends JFrame {
+public class CryptoTradingPlatformUI extends JPanel {
     public CryptoTradingPlatformUI() {
         // Set up the main frame
-        setTitle("Crypto Trading Platform");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setTitle("Crypto Trading Platform");
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 800);
-        setLocationRelativeTo(null); // Center the window
+//        setLocationRelativeTo(null); // Center the window
 
         // Main layout using BorderLayout
         setLayout(new BorderLayout());
