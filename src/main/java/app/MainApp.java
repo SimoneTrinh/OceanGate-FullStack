@@ -1,6 +1,7 @@
 package app;
 
 import chart.ChartHosting;
+import services.BinanceStreaming;
 import ui.components.center.MainCenterPanel;
 import ui.components.left.MainLeftPanel;
 import ui.components.top.MainTopPanel;
@@ -18,6 +19,8 @@ public class MainApp {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        BinanceStreaming.getInstance().connect();
 
         JFrame frame = new JFrame("Mixed Layout Demo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
