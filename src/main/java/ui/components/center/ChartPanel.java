@@ -1,14 +1,6 @@
 package ui.components.center;
 
 import chart.ChartConfiguration;
-import me.friwi.jcefmaven.CefAppBuilder;
-import me.friwi.jcefmaven.CefInitializationException;
-import me.friwi.jcefmaven.MavenCefAppHandlerAdapter;
-import me.friwi.jcefmaven.UnsupportedPlatformException;
-import org.cef.CefApp;
-import org.cef.CefClient;
-import org.cef.browser.CefBrowser;
-import org.cef.browser.CefMessageRouter;
 
 import javax.swing.*;
 import java.awt.*;
