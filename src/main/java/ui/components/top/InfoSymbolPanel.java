@@ -32,7 +32,6 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
         renderStarIcon(mainContent);
         renderSymbolText(mainContent);
         renderCommonStat(mainContent, "24h Change", "1,534.84 +1.95%", CHANGE_PANEL_24);
-        renderCommonStat(mainContent, "24h Change", "1,534.84 +1.95%", CHANGE_PANEL_24);
         renderCommonStat(mainContent, "24h High", "81,243.58", HIGH_PANEL_24);
         renderCommonStat(mainContent, "24h Low", "74,508.00", LOW_PANEL_24);
         renderCommonStat(mainContent, "24h Volume(BTC)", "76,581.28", VOLUME_PANEL_24_BTC);
