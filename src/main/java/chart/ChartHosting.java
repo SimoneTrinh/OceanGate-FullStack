@@ -16,6 +16,6 @@ public class ChartHosting {
         server.createContext("/", new StaticFileHandler("TVChart/dist"));
         server.setExecutor(null);
         server.start();
-        System.out.println("Server running at " + ChartConfiguration.CHART_BASE_URL + ":" + port + ChartConfiguration.CHART_INDEX_HTML);
+        System.out.println("Server running at " + ChartConfiguration.CHART_ENDPOINT + ":" + port + ChartConfiguration.CHART_INDEX_HTML);
     }
 }

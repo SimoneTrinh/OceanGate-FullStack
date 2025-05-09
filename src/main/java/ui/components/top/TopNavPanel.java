@@ -1,11 +1,20 @@
 package ui.components.top;
 
+import chart.ChartConfiguration;
+import services.BinanceStreaming;
 import ui.UIConfiguration;
+import ui.components.center.ChartAndOrderPanel;
+import ui.components.center.ChartPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class TopNavPanel extends JPanel {
+
+    private final BinanceStreaming socketState = BinanceStreaming.getInstance();
+
     public TopNavPanel(LayoutManager layout) {
         super(layout);
         this.setPreferredSize(new Dimension(UIConfiguration.TOP_NAV_WIDTH, UIConfiguration.TOP_NAV_HEIGHT));
@@ -24,8 +33,35 @@ public class TopNavPanel extends JPanel {
 
         // Center of top panel for dropdowns
         JPanel dropdownPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JComboBox<String> symbolDropdown = new JComboBox<>(new String[]{"BTC/USD", "ETH/USD", "XRP/USD"});
-        JComboBox<String> resolutionDropdown = new JComboBox<>(new String[]{"1m", "5m", "15m", "1h"});
+        JComboBox<String> symbolDropdown = new JComboBox<>(new String[]{"BTC/USDT", "ETH/USDT", "XRP/USDT"});
+        JComboBox<String> resolutionDropdown = new JComboBox<>(new String[]{"1", "15", "60", "240", "1D"});
+
+        symbolDropdown.addActionListener(e -> {
+            // Need handle ticker24, chart, order book
+
+            // Handle ticker24
+            String currentTicker24Stream = socketState.getTicker24Stream();
+            String dropDownText = (String) symbolDropdown.getSelectedItem();
+            String parseDropDown = dropDownText.replace("/", "").toLowerCase();
+            String newStream = parseDropDown + "@ticker";
+            // check and send unsubscrible / subscrible payload
+
+            if (!currentTicker24Stream.equals(newStream)) {
+                String unSubPayload = socketState.createUnSubscribePayload(currentTicker24Stream);
+                socketState.getWebSocket().sendText(unSubPayload, true);
+                socketState.setTicker24Stream(newStream);
+                String newSubPayload = socketState.createSubscribePayload(parseDropDown + "@ticker");
+                socketState.getWebSocket().sendText(newSubPayload, true);
+            }
+
+            // Handle chart
+            String query = ChartConfiguration.generateQuery(parseDropDown, (String) resolutionDropdown.getSelectedItem(), "dark");
+            ChartPanel.cefBrowser.loadURL(ChartConfiguration.CHART_BASE_URL + query);
+
+            // Handle order book
+            System.out.println(symbolDropdown.getSelectedItem());
+        });
+
         dropdownPanel.add(new JLabel("Symbol:"));
         dropdownPanel.add(symbolDropdown);
         dropdownPanel.add(new JLabel("Resolution:"));
@@ -41,5 +77,9 @@ public class TopNavPanel extends JPanel {
 //        JLabel logoLabel = new JLabel("LOGO", SwingConstants.CENTER);
 //        logoLabel.setPreferredSize(new Dimension(100, 50));
 //        this.add(logoLabel, BorderLayout.WEST);
+    }
+
+    private void renderPairDropDown(JPanel jPanel) {
+
     }
 }
