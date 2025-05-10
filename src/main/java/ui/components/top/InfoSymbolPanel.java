@@ -47,7 +47,7 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
     }
 
     private void renderSymbolText(JPanel panel) {
-        JLabel pairLabel = new JLabel("BTC/USDT");
+        JLabel pairLabel = new JLabel(TopNavPanel.currentPair);
         pairLabel.setForeground(Color.GREEN);
         pairLabel.setFont(pairLabel.getFont().deriveFont(Font.BOLD, 16f));
 

@@ -9,7 +9,9 @@ public class ChartConfiguration {
     public static final String CHART_QUERY_THEME = "theme=";
 
     public static final String CHART_BASE_URL = CHART_ENDPOINT + ":" + CHART_PORT + CHART_INDEX_HTML;
-
+    public static final String CURRENT_THEME = "dark";
+    public static final String CURRENT_SYMBOL = "BTCUSDT";
+    public static final String CURRENT_INTERVAL = "1D";
 
     /* Example:
     symbol = btcusdt

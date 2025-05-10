@@ -46,7 +46,9 @@ public class ChartPanel extends JPanel {
 
         CefMessageRouter msgRouter = CefMessageRouter.create();
         cefClient.addMessageRouter(msgRouter);
-        cefBrowser = cefClient.createBrowser(ChartConfiguration.CHART_BASE_URL, false, false);
+        String query = ChartConfiguration.generateQuery(ChartConfiguration.CURRENT_SYMBOL, ChartConfiguration.CURRENT_INTERVAL, ChartConfiguration.CURRENT_THEME);
+
+        cefBrowser = cefClient.createBrowser(ChartConfiguration.CHART_BASE_URL + query, false, false);
         add(cefBrowser.getUIComponent());
     }
 
