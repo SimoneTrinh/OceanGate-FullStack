@@ -14,16 +14,28 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BinanceStreaming implements WebSocket.Listener {
-    private static BinanceStreaming instance = new BinanceStreaming();
+    private static final BinanceStreaming instance = new BinanceStreaming();
     private WebSocket webSocket;
     private final Map<String, List<MessageListener>> listeners = new ConcurrentHashMap<>();
     private final String endPoint = "wss://stream.binance.com:9443/ws/@+07:00";
-    private String defaultStream = "btcusdt@ticker";
+    private String ticker24Stream = "btcusdt@ticker";
     private boolean isConnected = false;
 
 
     public static synchronized BinanceStreaming getInstance() {
         return instance;
+    }
+
+    public String getTicker24Stream() {
+        return ticker24Stream;
+    }
+
+    public void setTicker24Stream(String ticker24Stream) {
+        this.ticker24Stream = ticker24Stream;
+    }
+
+    public WebSocket getWebSocket() {
+        return this.webSocket;
     }
 
     public void connect() {
@@ -48,7 +60,7 @@ public class BinanceStreaming implements WebSocket.Listener {
     @Override
     public void onOpen(WebSocket webSocket) {
         isConnected = true;
-        String subscribePayload = createSubscribePayload(defaultStream);
+        String subscribePayload = createSubscribePayload(ticker24Stream);
         webSocket.sendText(subscribePayload, true);
         webSocket.request(1);
     }
@@ -59,13 +71,14 @@ public class BinanceStreaming implements WebSocket.Listener {
             JsonObject json = JsonParser.parseString(data.toString()).getAsJsonObject();
             if (json.has("result")) {
                 System.out.println(json.toString());
-            }else {
-            String flag = json.get("e").getAsString();
-            if (flag != null && listeners.containsKey(flag)) {
-                for (MessageListener listener : listeners.get(flag)) {
-                    listener.onMessageReceived(json);
+            } else {
+                String flag = json.get("e").getAsString();
+                if (flag != null && listeners.containsKey(flag)) {
+                    for (MessageListener listener : listeners.get(flag)) {
+                        listener.onMessageReceived(json);
+                    }
                 }
-            }}
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,12 +94,21 @@ public class BinanceStreaming implements WebSocket.Listener {
 
     public interface MessageListener {
         String getFlag(); // ID for listener received
+
         void onMessageReceived(JsonObject message);
     }
 
-    private String createSubscribePayload(String stream) {
+    public String createSubscribePayload(String stream) {
         JsonObject payload = new JsonObject();
         payload.addProperty("method", "SUBSCRIBE");
+        payload.add("params", new Gson().toJsonTree(new String[]{stream}));
+        payload.addProperty("id", 1);
+        return new Gson().toJson(payload);
+    }
+
+    public String createUnSubscribePayload(String stream) {
+        JsonObject payload = new JsonObject();
+        payload.addProperty("method", "UNSUBSCRIBE");
         payload.add("params", new Gson().toJsonTree(new String[]{stream}));
         payload.addProperty("id", 1);
         return new Gson().toJson(payload);

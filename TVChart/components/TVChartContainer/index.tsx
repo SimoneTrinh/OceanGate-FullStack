@@ -56,11 +56,6 @@ export const TVChartContainer = (props: Partial<ChartingLibraryWidgetOptions>) =
 
 	return (
 		<>
-			{/* <header className={styles.VersionHeader}>
-				<h1>
-					TradingView Charting Library and Next.js Integration Example
-				</h1>
-			</header> */}
 			<div ref={chartContainerRef} className={styles.TVChartContainer} />
 		</>
 	);
