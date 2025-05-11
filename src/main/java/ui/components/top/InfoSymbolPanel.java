@@ -3,6 +3,7 @@ package ui.components.top;
 import com.google.gson.JsonObject;
 import services.BinanceStreaming;
 import ui.UIConfiguration;
+import utils.NumberConversion;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -14,11 +15,17 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
     private final String CHANGE_PANEL_24 = "24changePanel";
     private final String HIGH_PANEL_24 = "24highPanel";
     private final String LOW_PANEL_24 = "24lowPanel";
-    private final String VOLUME_PANEL_24_BTC = "24volumePanelBTC";
-    private final String VOLUME_PANEL_24_USDT = "24volumePanelUSDT";
+    private final String VOLUME_PANEL_24_BASE_ASSET_VALUE = "24volumeBaseAssetValue";
+    private final String VOLUME_PANEL_24_QUOTE_ASSET_VALUE = "24volumeQuoteAssetValue";
+    private final String CURRENT_PRICE_LABEL = "currentPriceLabel";
+    private final String CURRENT_PRICE_USD_LABEL = "currentPriceUSDLabel";
+    private final String SYMBOL_DESC_LABEL = "symbolDescriptionLabel";
+    public final static String LABEL_CURRENT_SYMBOL = "labelCurrentSymbol"; // render again in top nav
+    public final static String VOLUME_24_BASE_ASSET_LABEL = "24BaseAssetLabel"; // render again in top nav
+    public final static String VOLUME_24_QUOTE_ASSET_LABEL = "24QuoteAssetLabel"; // render again in top nav
+    private float previousPrice = 0;
 
-    private GridBagConstraints gbc;
-    private Map<String, JLabel> controls = new HashMap<>();
+    public static Map<String, JLabel> controls = new HashMap<>();
 
     public InfoSymbolPanel(LayoutManager layout) {
         super(layout);
@@ -31,11 +38,12 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
 
         renderStarIcon(mainContent);
         renderSymbolText(mainContent);
-        renderCommonStat(mainContent, "24h Change", "1,534.84 +1.95%", CHANGE_PANEL_24);
-        renderCommonStat(mainContent, "24h High", "81,243.58", HIGH_PANEL_24);
-        renderCommonStat(mainContent, "24h Low", "74,508.00", LOW_PANEL_24);
-        renderCommonStat(mainContent, "24h Volume(BTC)", "76,581.28", VOLUME_PANEL_24_BTC);
-        renderCommonStat(mainContent, "24h Volume(USDT)", "5,948,215,778.00", VOLUME_PANEL_24_USDT);
+        renderPriceStat(mainContent);
+        renderCommonStat(mainContent, "24h Change", CHANGE_PANEL_24);
+        renderCommonStat(mainContent, "24h High", HIGH_PANEL_24);
+        renderCommonStat(mainContent, "24h Low", LOW_PANEL_24);
+        renderCommonStat(mainContent, "24h Volume (BTC)", VOLUME_PANEL_24_BASE_ASSET_VALUE);
+        renderCommonStat(mainContent, "24h Volume (USDT)", VOLUME_PANEL_24_QUOTE_ASSET_VALUE);
 
         add(mainContent);
     }
@@ -46,42 +54,64 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
         panel.add(starIcon);
     }
 
-    private void renderSymbolText(JPanel panel) {
-        JLabel pairLabel = new JLabel(TopNavPanel.currentPair);
-        pairLabel.setForeground(Color.GREEN);
-        pairLabel.setFont(pairLabel.getFont().deriveFont(Font.BOLD, 16f));
-
-        JLabel descLabel = new JLabel("Bitcoin Price ↗");
-        descLabel.setForeground(Color.GRAY);
-        descLabel.setFont(descLabel.getFont().deriveFont(12f));
-        JPanel symbolText = new JPanel();
-        symbolText.setLayout(new FlowLayout(FlowLayout.CENTER));
-        symbolText.setOpaque(false);
-        symbolText.add(pairLabel);
-        symbolText.add(descLabel);
-        panel.add(symbolText);
-    }
-
-    private void renderCommonStat(JPanel panel, String label, String value, String panelID) {
-        JLabel statLabel = new JLabel(label);
-//        valueColor = Color.BLACK; // debugging
-        statLabel.setForeground(Color.GRAY);
-        statLabel.setFont(statLabel.getFont().deriveFont(12f));
-
-        JLabel statValue = new JLabel(value);
-        controls.put(panelID, statValue);
-//        statValue.setForeground(valueColor);
-        statValue.setFont(statValue.getFont().deriveFont(Font.BOLD, 13f));
-
+    private JPanel renderInformation(JLabel firstLine, JLabel secondLine) {
         JPanel stat = new JPanel();
         stat.setLayout(new BoxLayout(stat, BoxLayout.Y_AXIS));
         stat.setOpaque(false);
         stat.add(Box.createVerticalStrut(10));
-        stat.add(statLabel);
+        stat.add(firstLine);
         stat.add(Box.createVerticalGlue());
-        stat.add(statValue);
+        stat.add(secondLine);
         stat.add(Box.createVerticalStrut(10));
-        panel.add(stat);
+        return stat;
+    }
+
+    private void renderSymbolText(JPanel panel) {
+        JLabel pairLabel = new JLabel(TopNavPanel.currentPair); // need set again when changing pair - ex: BTC/USDT
+        pairLabel.setForeground(Color.GREEN);
+        pairLabel.setFont(pairLabel.getFont().deriveFont(Font.BOLD, 16f));
+
+        JLabel descLabel = new JLabel("Price ↗");
+        descLabel.setForeground(Color.GRAY);
+        descLabel.setFont(descLabel.getFont().deriveFont(12f));
+
+        controls.put(LABEL_CURRENT_SYMBOL, pairLabel);
+        controls.put(SYMBOL_DESC_LABEL, descLabel);
+
+        panel.add(renderInformation(pairLabel, descLabel));
+    }
+
+    private void renderPriceStat(JPanel panel) {
+        JLabel firstLinePrice = new JLabel(); // need set again when changing pair
+        firstLinePrice.setForeground(Color.GREEN); // logic green when up, red when down
+        firstLinePrice.setFont(firstLinePrice.getFont().deriveFont(Font.BOLD, 16f));
+        controls.put(CURRENT_PRICE_LABEL, firstLinePrice);
+
+        JLabel secondLinePrice = new JLabel();
+        controls.put(CURRENT_PRICE_USD_LABEL, secondLinePrice);
+        secondLinePrice.setForeground(Color.BLACK);
+        secondLinePrice.setFont(secondLinePrice.getFont().deriveFont(12f));
+
+
+        panel.add(renderInformation(firstLinePrice, secondLinePrice));
+    }
+
+
+    private void renderCommonStat(JPanel panel, String label, String panelID) {
+        JLabel statLabel = new JLabel(label);
+        statLabel.setForeground(Color.GRAY);
+        statLabel.setFont(statLabel.getFont().deriveFont(12f));
+        if(panelID.equals(VOLUME_PANEL_24_BASE_ASSET_VALUE)){
+            controls.put(VOLUME_24_BASE_ASSET_LABEL, statLabel);
+        }else if (panelID.equals(VOLUME_PANEL_24_QUOTE_ASSET_VALUE)){
+            controls.put(VOLUME_24_QUOTE_ASSET_LABEL, statLabel);
+        }
+
+        JLabel statValue = new JLabel();
+        controls.put(panelID, statValue);
+        statValue.setFont(statValue.getFont().deriveFont(Font.BOLD, 13f));
+
+        panel.add(renderInformation(statLabel, statValue));
     }
 
     @Override
@@ -95,16 +125,41 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
         System.out.println("123");
 
         System.out.println(jsonMessage.toString());
+
         String change = jsonMessage.get("p").getAsString();
         String percentChange = jsonMessage.get("P").getAsString();
+        String changeText = NumberConversion.convertStringToFloat(change) + " " + NumberConversion.convertStringToFloat(percentChange) + "%";
+        if (Float.parseFloat(change) < 0) {
+            controls.get(CHANGE_PANEL_24).setForeground(Color.RED);
+        } else if (Float.parseFloat(change) >= 0) {
+            changeText = "+" + NumberConversion.convertStringToFloat(change) + " +" + NumberConversion.convertStringToFloat(percentChange) + "%";
+            controls.get(CHANGE_PANEL_24).setForeground(Color.GREEN);
+        }
+        controls.get(CHANGE_PANEL_24).setText(changeText);
 
-        controls.get(CHANGE_PANEL_24).setText(change + " " + percentChange + "%");
-//
-//
+        String open = jsonMessage.get("c").getAsString();
+        controls.get(CURRENT_PRICE_LABEL).setText(NumberConversion.convertStringToFloat(open));
+        if (Float.parseFloat(open) < previousPrice) {
+            controls.get(CURRENT_PRICE_LABEL).setForeground(Color.RED);
+            controls.get(SYMBOL_DESC_LABEL).setText("Price ↘");
+        } else if (Float.parseFloat(open) > previousPrice) {
+            controls.get(CURRENT_PRICE_LABEL).setForeground(Color.GREEN);
+            controls.get(SYMBOL_DESC_LABEL).setText("Price ↗");
+        }
+        previousPrice = Float.parseFloat(open); // set as current price
+        controls.get(CURRENT_PRICE_USD_LABEL).setText("$" + NumberConversion.convertStringToFloat(open));
+
         String high = jsonMessage.get("h").getAsString();
-        controls.get(HIGH_PANEL_24).setText(high);
+        controls.get(HIGH_PANEL_24).setText(NumberConversion.convertStringToFloat(high));
+
         String low = jsonMessage.get("l").getAsString();
-        controls.get(LOW_PANEL_24).setText(low);
+        controls.get(LOW_PANEL_24).setText(NumberConversion.convertStringToFloat(low));
+
+        String volume = jsonMessage.get("v").getAsString(); // base asset
+        controls.get(VOLUME_PANEL_24_BASE_ASSET_VALUE).setText(NumberConversion.convertStringToFloat(volume));
+
+        String quoteVolume = jsonMessage.get("q").getAsString(); // quote asset
+        controls.get(VOLUME_PANEL_24_QUOTE_ASSET_VALUE).setText(NumberConversion.convertStringToFloat(quoteVolume));
 //
         System.out.println("Change: " + change + " Percent: " + percentChange + " High: " + high + " Low: " + low);
 // TODO: add more panels

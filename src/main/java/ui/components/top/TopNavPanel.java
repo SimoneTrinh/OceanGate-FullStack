@@ -6,6 +6,7 @@ import ui.UIConfiguration;
 import ui.components.center.ChartAndOrderPanel;
 import ui.components.center.ChartPanel;
 import utils.ResolutionInterval;
+import utils.TradingPair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -63,7 +64,14 @@ public class TopNavPanel extends JPanel {
             // Handle ticker24
             String currentTicker24Stream = socketState.getTicker24Stream();
             String symbolDropDownText = (String) symbolDropdown.getSelectedItem();
-            currentPair = symbolDropDownText; // for symbol info panel
+
+            // re-render when change for symbol info panel
+            currentPair = symbolDropDownText;
+            TradingPair pair = TradingPair.splitSymbol(symbolDropDownText);
+            InfoSymbolPanel.controls.get(InfoSymbolPanel.LABEL_CURRENT_SYMBOL).setText(currentPair);
+            InfoSymbolPanel.controls.get(InfoSymbolPanel.VOLUME_24_BASE_ASSET_LABEL).setText("24h Volume (" + pair.getBaseAsset() + ")");
+            InfoSymbolPanel.controls.get(InfoSymbolPanel.VOLUME_24_QUOTE_ASSET_LABEL).setText("24h Volume (" + pair.getQuoteAsset() + ")");
+
             String parseDropDown = symbolDropDownText.replace("/", "").toLowerCase();
             String newStream = parseDropDown + "@ticker";
             // check and send unsubscribe / subscribe payload
@@ -96,6 +104,7 @@ public class TopNavPanel extends JPanel {
 
     private void renderIntervalDropDown() {
         resolutionDropdown = new JComboBox<>(ResolutionInterval.getAllLabels(supportedResolution));
+        resolutionDropdown.setSelectedItem(supportedResolution[2].getLabel());
         resolutionDropdown.addActionListener(e -> {
             // Handle chart
             String symbolDropDownText = (String) symbolDropdown.getSelectedItem();
