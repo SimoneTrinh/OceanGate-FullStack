@@ -1,6 +1,7 @@
 package app;
 
 import chart.ChartHosting;
+import com.formdev.flatlaf.FlatLightLaf;
 import services.BinanceStreaming;
 import ui.components.center.MainCenterPanel;
 import ui.components.left.MainLeftPanel;
@@ -12,6 +13,7 @@ import java.io.IOException;
 
 public class MainApp {
     public static void main(String[] args) {
+        FlatLightLaf.setup();
 
         ChartHosting chart = new ChartHosting();
         try {
