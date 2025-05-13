@@ -35,6 +35,14 @@ public class BinanceStreaming implements WebSocket.Listener {
         this.ticker24Stream = ticker24Stream;
     }
 
+    public String getOrderBookStream() {
+        return orderBookStream;
+    }
+
+    public void setOrderBookStream(String orderBookStream) {
+        this.orderBookStream = orderBookStream;
+    }
+
     public WebSocket getWebSocket() {
         return this.webSocket;
     }
@@ -116,10 +124,10 @@ public class BinanceStreaming implements WebSocket.Listener {
         return new Gson().toJson(payload);
     }
 
-    public String createUnSubscribePayload(String stream) {
+    public String createUnSubscribePayload(String[] stream) {
         JsonObject payload = new JsonObject();
         payload.addProperty("method", "UNSUBSCRIBE");
-        payload.add("params", new Gson().toJsonTree(new String[]{stream}));
+        payload.add("params", new Gson().toJsonTree(stream));
         payload.addProperty("id", 1);
         return new Gson().toJson(payload);
     }
