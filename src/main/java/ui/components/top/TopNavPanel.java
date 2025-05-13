@@ -61,8 +61,9 @@ public class TopNavPanel extends JPanel {
         symbolDropdown.addActionListener(e -> {
             // Need handle ticker24, chart, order book
 
-            // Handle ticker24
+            // Handle ticker24 and order book stream
             String currentTicker24Stream = socketState.getTicker24Stream();
+            String currentOrderBookStream = socketState.getOrderBookStream();
             String symbolDropDownText = (String) symbolDropdown.getSelectedItem();
 
             // re-render when change for symbol info panel
@@ -73,16 +74,19 @@ public class TopNavPanel extends JPanel {
             InfoSymbolPanel.controls.get(InfoSymbolPanel.VOLUME_24_QUOTE_ASSET_LABEL).setText("24h Volume (" + pair.getQuoteAsset() + ")");
 
             String parseDropDown = symbolDropDownText.replace("/", "").toLowerCase();
-            String newStream = parseDropDown + "@ticker";
+            String newStreamTicker = parseDropDown + "@ticker";
+            String newStreamOrderBook = parseDropDown + "@depth";
             // check and send unsubscribe / subscribe payload
 
-            if (!currentTicker24Stream.equals(newStream)) {
-                String unSubPayload = socketState.createUnSubscribePayload(currentTicker24Stream);
+            if (!currentTicker24Stream.equals(newStreamTicker)) {
+                String unSubPayload = socketState.createUnSubscribePayload(new String[]{currentTicker24Stream, currentOrderBookStream});
                 socketState.getWebSocket().sendText(unSubPayload, true);
-                socketState.setTicker24Stream(newStream);
-                String newSubPayload = socketState.createSubscribePayload(parseDropDown + "@ticker");
+                socketState.setTicker24Stream(newStreamTicker);
+                socketState.setOrderBookStream(newStreamOrderBook);
+                String newSubPayload = socketState.createSubscribePayload(new String[]{newStreamTicker, newStreamOrderBook});
                 socketState.getWebSocket().sendText(newSubPayload, true);
             }
+
 
             // Handle chart
             String resolution = ResolutionInterval.getValueByLabel(supportedResolution, (String) resolutionDropdown.getSelectedItem());
