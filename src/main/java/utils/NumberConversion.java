@@ -16,4 +16,16 @@ public class NumberConversion {
             return regularFormat.format(value);
         }
     }
+
+    public static String convertPriceOrderBook(String str) {
+        float value = Float.parseFloat(str);
+        DecimalFormat smallFormat = new DecimalFormat("0.00");
+        return smallFormat.format(value);
+    }
+
+    public static String convertAmountOrderBook(String str) {
+        float value = Float.parseFloat(str);
+        DecimalFormat smallFormat = new DecimalFormat("0.00000");
+        return smallFormat.format(value);
+    }
 }

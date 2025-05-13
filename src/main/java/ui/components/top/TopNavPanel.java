@@ -80,7 +80,7 @@ public class TopNavPanel extends JPanel {
                 String unSubPayload = socketState.createUnSubscribePayload(currentTicker24Stream);
                 socketState.getWebSocket().sendText(unSubPayload, true);
                 socketState.setTicker24Stream(newStream);
-                String newSubPayload = socketState.createSubscribePayload(parseDropDown + "@ticker");
+                String newSubPayload = socketState.createSubscribePayload(new String[]{parseDropDown + "@ticker"});
                 socketState.getWebSocket().sendText(newSubPayload, true);
             }
 

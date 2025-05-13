@@ -1,31 +1,26 @@
 package ui.components.left;
 
 public class OrderBookEntry {
-    private float price;
-    private float amount;
-    private float total;
+    private String price;
+    private String amount;
+    private String total;
 
-    public OrderBookEntry(float price, float amount) {
+
+    public OrderBookEntry(String price, String amount, String total) {
         this.price = price;
         this.amount = amount;
-        this.total = this.price * this.amount;
+        this.total = total;
     }
 
-    public OrderBookEntry(double price, double amount) {
-        this.price = (float) price;
-        this.amount = (float) amount;
-        this.total = this.price * this.amount;
-    }
-
-    public float getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public float getAmount() {
+    public String getAmount() {
         return amount;
     }
 
-    public float getTotal() {
+    public String getTotal() {
         return total;
     }
 }

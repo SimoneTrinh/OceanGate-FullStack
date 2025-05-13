@@ -3,6 +3,7 @@ package ui.components.top;
 import com.google.gson.JsonObject;
 import services.BinanceStreaming;
 import ui.UIConfiguration;
+import ui.components.left.MainLeftPanel;
 import utils.NumberConversion;
 
 import javax.swing.*;
@@ -121,11 +122,7 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
 
     @Override
     public void onMessageReceived(JsonObject jsonMessage) {
-        // object mapping to panels
-        System.out.println("123");
-
-        System.out.println(jsonMessage.toString());
-
+        // 24h change
         String change = jsonMessage.get("p").getAsString();
         String percentChange = jsonMessage.get("P").getAsString();
         String changeText = NumberConversion.convertStringToFloat(change) + " " + NumberConversion.convertStringToFloat(percentChange) + "%";
@@ -137,31 +134,41 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
         }
         controls.get(CHANGE_PANEL_24).setText(changeText);
 
+        // Price & Order book price
         String open = jsonMessage.get("c").getAsString();
-        controls.get(CURRENT_PRICE_LABEL).setText(NumberConversion.convertStringToFloat(open));
+        String formattedFloatPrice = NumberConversion.convertStringToFloat(open);
+        MainLeftPanel.labelComponents.get(MainLeftPanel.CURRENT_PRICE_LABEL).setText(formattedFloatPrice); // order book price
+
+        controls.get(CURRENT_PRICE_LABEL).setText(formattedFloatPrice);
         if (Float.parseFloat(open) < previousPrice) {
             controls.get(CURRENT_PRICE_LABEL).setForeground(Color.RED);
+            MainLeftPanel.labelComponents.get(MainLeftPanel.CURRENT_PRICE_LABEL).setForeground(Color.RED);
             controls.get(SYMBOL_DESC_LABEL).setText("Price ↘");
         } else if (Float.parseFloat(open) > previousPrice) {
             controls.get(CURRENT_PRICE_LABEL).setForeground(Color.GREEN);
+            MainLeftPanel.labelComponents.get(MainLeftPanel.CURRENT_PRICE_LABEL).setForeground(Color.GREEN);
             controls.get(SYMBOL_DESC_LABEL).setText("Price ↗");
         }
         previousPrice = Float.parseFloat(open); // set as current price
-        controls.get(CURRENT_PRICE_USD_LABEL).setText("$" + NumberConversion.convertStringToFloat(open));
+        controls.get(CURRENT_PRICE_USD_LABEL).setText("$" + formattedFloatPrice);
+        MainLeftPanel.labelComponents.get(MainLeftPanel.CURRENT_PRICE_USD).setText("$" + formattedFloatPrice);
 
+        // High
         String high = jsonMessage.get("h").getAsString();
         controls.get(HIGH_PANEL_24).setText(NumberConversion.convertStringToFloat(high));
 
+        // Low
         String low = jsonMessage.get("l").getAsString();
         controls.get(LOW_PANEL_24).setText(NumberConversion.convertStringToFloat(low));
 
+        // Vol
         String volume = jsonMessage.get("v").getAsString(); // base asset
         controls.get(VOLUME_PANEL_24_BASE_ASSET_VALUE).setText(NumberConversion.convertStringToFloat(volume));
 
+        // Quote Vol
         String quoteVolume = jsonMessage.get("q").getAsString(); // quote asset
         controls.get(VOLUME_PANEL_24_QUOTE_ASSET_VALUE).setText(NumberConversion.convertStringToFloat(quoteVolume));
-//
+
         System.out.println("Change: " + change + " Percent: " + percentChange + " High: " + high + " Low: " + low);
-// TODO: add more panels
     }
 }
