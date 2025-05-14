@@ -29,11 +29,12 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
         super(layout);
         setPreferredSize(new Dimension(UIConfiguration.MAIN_LEFT_WIDTH, UIConfiguration.MAIN_LEFT_HEIGHT));
         BinanceStreaming.getInstance().addListener(this);
+        setLayout(new BorderLayout());
+
+        add(renderHeaderPanel(), BorderLayout.NORTH);
 
         JPanel stat = new JPanel();
         stat.setLayout(new BoxLayout(stat, BoxLayout.Y_AXIS));
-
-        stat.add(renderHeaderPanel());
         stat.add(renderOrderTable(SELL_TABLE));
         stat.add(renderOpenPrice());
         stat.add(renderOrderTable(BUY_TABLE));
@@ -42,7 +43,9 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        add(scrollPane);
+        scrollPane.setColumnHeaderView(book.get(SELL_TABLE).getTableHeader()); // show table header, scroll panel will hide headers because conflict between box & scroll Y Axis
+
+        add(scrollPane, BorderLayout.CENTER);
     }
 
     private JPanel renderHeaderPanel() {
