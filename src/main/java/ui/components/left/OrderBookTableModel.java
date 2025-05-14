@@ -10,7 +10,6 @@ class OrderBookTableModel extends AbstractTableModel {
     public OrderBookTableModel(List<OrderBookEntry> listOrderBookEntry) {
         data = listOrderBookEntry;
     }
-
     @Override
     public int getRowCount() {
         return data.size();
