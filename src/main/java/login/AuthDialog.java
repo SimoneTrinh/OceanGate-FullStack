@@ -6,7 +6,6 @@ import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 public class AuthDialog extends JDialog {
     private final Image backgroundImage;

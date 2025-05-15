@@ -7,12 +7,11 @@ import java.awt.*;
 
 
 public class LoginPage extends JPanel{
-    private JTextField txtUsername;
-    private JPasswordField txtPassword;
-    private JCheckBox chRememberme;
-    private JButton loginButton;
-    private Image loginBg;
-    private JButton signupButton;
+    private final JTextField txtUsername;
+    private final JPasswordField txtPassword;
+    private final JCheckBox chRememberme;
+    private final JButton loginButton;
+    private final JButton signupButton;
 
     public LoginPage(CardLayout layout, JPanel container, Runnable onLoginSuccess, JDialog dialog) {
         setLayout(new MigLayout("fill,insets 20", "[center]", "[center]"));
