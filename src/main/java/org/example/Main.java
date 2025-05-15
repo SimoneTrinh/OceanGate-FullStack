@@ -1,34 +1,46 @@
 package org.example;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import login.AuthPanel;
-import login.LoginPage;
+import login.AuthDialog;
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-        FlatRobotoFont.install();
-        FlatLaf.registerCustomDefaultsSource("raven.themes");
-//        UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN, 13));
-        FlatMacDarkLaf.setup();
+public class Main extends JFrame {
+    public Main() {
+        setTitle("Crypto Trading App");
+        setSize(1200, 800);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Bắt đầu với giao diện ứng dụng chính
+        CryptoTradingPlatformUI appPanel = new CryptoTradingPlatformUI();
+        add(appPanel);
+
+        AtomicBoolean loginSuccess = new AtomicBoolean(false);
+
+        // Chạy Auth Dialog
         SwingUtilities.invokeLater(() -> {
-//            CryptoTradingPlatformUI ui = new CryptoTradingPlatformUI();
-            JFrame ui = new JFrame();
-            AuthPanel authPanel = new AuthPanel();
+            AuthDialog authDialog = new AuthDialog(this, () -> {
+                loginSuccess.set(true);
+                this.setVisible(true); // hiện main app sau login
+            });
 
-            ui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            ui.setTitle("Test Login Page");
-            ui.setLocationRelativeTo(null);
-            ui.setSize(800, 600);
-            ui.setContentPane(authPanel);
-            ui.setVisible(true);
+            authDialog.setVisible(true);
+
+            // Sau khi dialog đóng, kiểm tra xem login có thành công không
+            if (!loginSuccess.get()) {
+                System.exit(0); // Thoát chương trình nếu login thất bại
+            }
         });
     }
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new Main().setVisible(false); // ẩn frame cho đến khi login thành công
+        });
+    }
 }
