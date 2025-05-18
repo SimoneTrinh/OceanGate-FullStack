@@ -4,9 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import services.BinanceStreaming;
 import ui.UIConfiguration;
+import ui.components.center.OrderPanel;
 import utils.NumberConversion;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -64,6 +67,39 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
         table.setRowHeight(32);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // Modern font
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        table.getSelectionModel().addListSelectionListener(e -> {
+            // Ignore extra messages while adjusting
+            if (!e.getValueIsAdjusting()) {
+                int row = table.getSelectedRow();
+                if (row >= 0) {
+                    System.out.print("Selected row " + row + ": ");
+                    for (int col = 0; col < table.getColumnCount(); col++) {
+                        System.out.print(table.getValueAt(row, col) + " ");
+                    }
+                    System.out.println();
+
+                    if (tableID.equals(BUY_TABLE)) {
+                        String orderType = OrderPanel.comboBoxes.get(OrderPanel.BUY_TYPE).getSelectedItem().toString();
+                        if (orderType.equals(OrderPanel.MARKET_ORDER)) { // Market order == get price of market
+                            OrderPanel.textFields.get(OrderPanel.BUY_PRICE_FIELD).setText(table.getValueAt(row, 0).toString());
+                        } else if (orderType.equals(OrderPanel.LIMIT_ORDER)) { // Limit order == get amount of market
+                            OrderPanel.textFields.get(OrderPanel.BUY_AMOUNT_FIELD).setText(table.getValueAt(row, 1).toString());
+                        }
+                    } else if (tableID.equals(SELL_TABLE)) {
+                        String orderType = OrderPanel.comboBoxes.get(OrderPanel.SELL_TYPE).getSelectedItem().toString();
+                        if (orderType.equals(OrderPanel.MARKET_ORDER)) {
+                            OrderPanel.textFields.get(OrderPanel.SELL_PRICE_FIELD).setText(table.getValueAt(row, 0).toString());
+                        } else if (orderType.equals(OrderPanel.LIMIT_ORDER)) {
+                            OrderPanel.textFields.get(OrderPanel.SELL_AMOUNT_FIELD).setText(table.getValueAt(row, 1).toString());
+                        }
+                    }
+                }
+
+
+            }
+        });
+
         book.put(tableID, table);
         return table;
     }
@@ -89,9 +125,6 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
     @Override
     public void onMessageReceived(JsonObject jsonMessage) {
         // object mapping to panels
-        System.out.println("depth");
-
-//        System.out.println(jsonMessage.toString());
 
         List<OrderBookEntry> listSell = new ArrayList<>();
         JsonArray listBid = jsonMessage.getAsJsonArray("b");
@@ -114,15 +147,9 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
             } else if (listBuy.size() == MAX_BOOK_ENTITY) {
                 break;
             }
-            listBuy.add(new OrderBookEntry(NumberConversion.convertPriceOrderBook(price), NumberConversion.convertAmountOrderBook(amount), calculateTotal(price, amount)));
+            listBuy.add(new OrderBookEntry(NumberConversion.convertPriceOrderBook(price), NumberConversion.convertAmountOrderBook(amount), NumberConversion.calculateTotalPrice(price, amount)));
         }
         OrderBookTableModel tableModelBuy = new OrderBookTableModel(listBuy);
         book.get(tableType).setModel(tableModelBuy);
-    }
-
-    private String calculateTotal(String price, String amount) {
-        float result = Float.parseFloat(price) * Float.parseFloat(amount);
-        DecimalFormat smallFormat = new DecimalFormat("0.00");
-        return smallFormat.format(result);
     }
 }
