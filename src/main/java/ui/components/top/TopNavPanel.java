@@ -19,9 +19,10 @@ public class TopNavPanel extends JPanel {
     public static String currentPair = "BTC/USDT"; // get from default and wwhen change, set it again
     private JComboBox<String> symbolDropdown;
     private JComboBox<String> resolutionDropdown;
+    private JButton userMenuButton;
 
 
-    public TopNavPanel(LayoutManager layout) {
+    public TopNavPanel(LayoutManager layout, ActionListener userMenuListener) {
         super(layout);
         this.setPreferredSize(new Dimension(UIConfiguration.TOP_NAV_WIDTH, UIConfiguration.TOP_NAV_HEIGHT));
 
@@ -50,9 +51,9 @@ public class TopNavPanel extends JPanel {
         topPanel.add(dropdownPanel, BorderLayout.CENTER);
 
         // User menu (right side of top panel)
-        JButton userMenuButton = new JButton("User Menu");
+        userMenuButton = new JButton("User Menu");
+        userMenuButton.addActionListener(userMenuListener);
         topPanel.add(userMenuButton, BorderLayout.EAST);
-
         add(topPanel);
     }
 
