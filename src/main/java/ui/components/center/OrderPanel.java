@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class OrderPanel extends JPanel {
     public static final HashMap<String, JTextField> textFields = new HashMap<>();
@@ -112,31 +113,36 @@ public class OrderPanel extends JPanel {
         jPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         jPanel.add(new JLabel("Price"));
         JTextField priceField = new JTextField("0.00", 10);
-//        priceField.getDocument().addDocumentListener(new DocumentListener() {
-//            public void insertUpdate(DocumentEvent e) {
-//                onTextChanged();
-//            }
-//            public void removeUpdate(DocumentEvent e) {
-//                onTextChanged();
-//            }
-//
-//            public void changedUpdate(DocumentEvent e) {
-//                onTextChanged();
-//            }
+        priceField.setEditable(true);
 
-//            private void onTextChanged() {
-//                if(textFieldID.equals(BUY_TOTAL_PRICE_FIELD)){
-//                    String price = priceField.getText();
-//                    String amount = textFields.get(BUY_AMOUNT_FIELD).toString();
-//                    textFields.get(BUY_TOTAL_PRICE_FIELD).setText(NumberConversion.calculateTotalPrice(price, amount));
-//                }
-//                else if(textFieldID.equals(SELL_TOTAL_PRICE_FIELD)){
-//                    String price = priceField.getText();
-//                    String amount = textFields.get(SELL_AMOUNT_FIELD).toString();
-//                    textFields.get(SELL_TOTAL_PRICE_FIELD).setText(NumberConversion.calculateTotalPrice(price, amount));
-//                }
-//            }
-//        });
+        priceField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
+                onTextChanged();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                onTextChanged();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                onTextChanged();
+            }
+
+            private void onTextChanged() {
+                if(!Objects.equals(priceField.getText(), "")) {
+                    if (textFieldID.equals(BUY_PRICE_FIELD)) {
+                        String price = priceField.getText();
+                        String amount = textFields.get(BUY_AMOUNT_FIELD).getText();
+                        String total = NumberConversion.calculateTotalPrice(price, amount);
+                        textFields.get(BUY_TOTAL_PRICE_FIELD).setText(total);
+                    } else if (textFieldID.equals(SELL_PRICE_FIELD)) {
+                        String price = priceField.getText();
+                        String amount = textFields.get(SELL_AMOUNT_FIELD).getText();
+                        String total = NumberConversion.calculateTotalPrice(price, amount);
+                        textFields.get(SELL_TOTAL_PRICE_FIELD).setText(total);
+                    }
+                }
+            }
+        });
 
         textFields.put(textFieldID, priceField);
         jPanel.add(priceField);
@@ -149,9 +155,37 @@ public class OrderPanel extends JPanel {
         jPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         jPanel.add(new JLabel("Amount"));
         JTextField amountField = new JTextField("0.00", 10);
+        amountField.setEditable(true);
+        amountField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
+                onTextChanged();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                onTextChanged();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                onTextChanged();
+            }
+
+            private void onTextChanged() {
+                if(!Objects.equals(amountField.getText(), "")) {
+                    if (textFieldID.equals(BUY_AMOUNT_FIELD)) {
+                        String price = textFields.get(BUY_PRICE_FIELD).getText();
+                        String amount = amountField.getText();
+                        String total = NumberConversion.calculateTotalPrice(price, amount);
+                        textFields.get(BUY_TOTAL_PRICE_FIELD).setText(total);
+                    } else if (textFieldID.equals(SELL_AMOUNT_FIELD)) {
+                        String price = textFields.get(SELL_PRICE_FIELD).getText();
+                        String amount = amountField.getText();
+                        String total = NumberConversion.calculateTotalPrice(price, amount);
+                        textFields.get(SELL_TOTAL_PRICE_FIELD).setText(total);
+                    }
+                }
+            }
+        });
         textFields.put(textFieldID, amountField);
         jPanel.add(amountField);
-        add(new JLabel("ETH"));
         return jPanel;
     }
 
