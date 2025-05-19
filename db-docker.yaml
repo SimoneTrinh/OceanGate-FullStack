@@ -1,0 +1,13 @@
+services:
+  mysql:
+    image: mysql:9.1.0
+    container_name: xampp_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword@1
+      MYSQL_DATABASE: master
+      MYSQL_USER: uitjava@1
+      MYSQL_PASSWORD: sunh@12
+    ports:
+      - "3306:3306"
+
+# run: docker compose -f db-docker.yaml up -d
