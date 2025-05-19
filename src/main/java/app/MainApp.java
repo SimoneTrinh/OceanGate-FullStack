@@ -56,6 +56,7 @@ public class MainApp extends JFrame {
 
         AtomicBoolean loginSuccess = new AtomicBoolean(false);
 
+        // Login
         SwingUtilities.invokeLater(() -> {
             AuthDialog authDialog = new AuthDialog(this, () -> {
                 loginSuccess.set(true);
