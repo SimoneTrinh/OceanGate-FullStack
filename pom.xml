@@ -29,13 +29,6 @@
             <version>132.3.1</version>
         </dependency>
 
-        <!-- Dependency cho FlatLaf (giao diện hiện đại cho Swing) -->
-        <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf</artifactId>
-            <version>3.5.4</version>
-        </dependency>
-
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-extras</artifactId>

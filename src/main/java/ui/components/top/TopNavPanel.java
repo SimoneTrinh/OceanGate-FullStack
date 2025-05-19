@@ -17,7 +17,7 @@ public class TopNavPanel extends JPanel {
 
     private final BinanceStreaming socketState = BinanceStreaming.getInstance();
     public static String currentPair = "BTC/USDT"; // get from default and wwhen change, set it again
-    private JComboBox<String> symbolDropdown;
+    public static JComboBox<String> symbolDropdown = new JComboBox<>(new String[]{"BTC/USDT", "ETH/USDT", "XRP/USDT"});;
     private JComboBox<String> resolutionDropdown;
 
 
@@ -57,7 +57,6 @@ public class TopNavPanel extends JPanel {
     }
 
     private void renderSymbolDropDown() {
-        symbolDropdown = new JComboBox<>(new String[]{"BTC/USDT", "ETH/USDT", "XRP/USDT"});
         symbolDropdown.addActionListener(e -> {
             // Need handle ticker24, chart, order book
 
