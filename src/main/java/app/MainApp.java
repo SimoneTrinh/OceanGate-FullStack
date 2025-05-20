@@ -1,9 +1,10 @@
 package app;
 
+import CryptoUserInfo.CryptoUserInfo;
 import chart.ChartHosting;
+import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import login.AuthDialog;
-import user_menu.UserMenu;
 import services.BinanceStreaming;
 import ui.components.center.MainCenterPanel;
 import ui.components.left.MainLeftPanel;
@@ -15,8 +16,8 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainApp extends JFrame {
-    private CardLayout cardLayout;
-    private JPanel mainContentPanel;
+    private final CardLayout cardLayout;
+    private final JPanel mainContentPanel;
     public MainApp() {
         // Setup giao diện app
         setTitle("Crypto Trading App");
@@ -25,8 +26,8 @@ public class MainApp extends JFrame {
         setLocationRelativeTo(null);
 
         // Setup giao diện Trading
+        FlatLaf.registerCustomDefaultsSource("themes"); // thư mục chứa FlatLaf.properties
         FlatLightLaf.setup();
-
         ChartHosting chart = new ChartHosting();
         try {
             chart.init();
@@ -45,11 +46,11 @@ public class MainApp extends JFrame {
         JPanel tradingPanel = createTradingPanel();
 
         // 2. Giao diện UserMenu
-        UserMenu userMenu = new UserMenu();
+        CryptoUserInfo userInfo = new CryptoUserInfo(e-> cardLayout.show(mainContentPanel, "TRADING"));
 
         // Add các màn hình vào card
         mainContentPanel.add(tradingPanel, "TRADING");
-        mainContentPanel.add(userMenu, "USER_MENU");
+        mainContentPanel.add(userInfo, "USER_MENU");
 
         // Mặc định hiển thị trading
         cardLayout.show(mainContentPanel, "TRADING");
@@ -59,6 +60,8 @@ public class MainApp extends JFrame {
         // Login
         SwingUtilities.invokeLater(() -> {
             AuthDialog authDialog = new AuthDialog(this, () -> {
+                FlatLaf.registerCustomDefaultsSource("themes"); // thư mục chứa FlatLaf.properties
+                FlatLightLaf.setup();
                 loginSuccess.set(true);
                 this.setVisible(true);
             });
@@ -68,6 +71,8 @@ public class MainApp extends JFrame {
             if (!loginSuccess.get()) {
                 System.exit(0);
             }
+            FlatLaf.registerCustomDefaultsSource((String) null); // xóa custom source
+            FlatLightLaf.setup(); // hoặc UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         });
     }
 

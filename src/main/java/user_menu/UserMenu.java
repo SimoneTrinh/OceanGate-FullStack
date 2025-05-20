@@ -5,13 +5,10 @@ import net.miginfocom.swing.MigLayout;
 import user_menu.panels.PersonalInfo;
 import user_menu.panels.ContactInfo;
 import user_menu.panels.AccountSetting;
-import user_menu.components.SideBar;
 import javax.swing.*;
 import java.awt.*;
 
 public class UserMenu extends JPanel {
-    private CardLayout cardLayout;
-    private JPanel contentPanel;
 
     public UserMenu() {
         FlatRobotoFont.install();
@@ -27,8 +24,4 @@ public class UserMenu extends JPanel {
         add(new ContactInfo());
         add(new AccountSetting());
     }
-    private void showPage(String name) {
-        cardLayout.show(contentPanel, name);
-    }
-
 }

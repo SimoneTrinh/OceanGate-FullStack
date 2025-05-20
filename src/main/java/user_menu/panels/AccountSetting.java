@@ -8,11 +8,8 @@ import javax.swing.*;
 public class AccountSetting extends JPanel {
     public AccountSetting() {
         setLayout(new MigLayout("wrap 2", "[right][grow, fill]", "15[]10[]10[]10[]15[]"));
-        setBorder(UIUtils.createStyledTitle("Account Settings"));
+        setBorder(UIUtils.createStyledTitle("Change Password"));
 
-        UIUtils.addEditableField(this, "Username:", "tuan123", false);
-
-        add(UIUtils.createStyledLabel("Change Password:"), "span 2, gaptop 10");
 
         add(UIUtils.createStyledLabel("Current Password:"));
         add(UIUtils.createPasswordField(20));
