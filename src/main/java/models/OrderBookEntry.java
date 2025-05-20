@@ -1,4 +1,4 @@
-package ui.components.left;
+package models;
 
 public class OrderBookEntry {
     private String price;

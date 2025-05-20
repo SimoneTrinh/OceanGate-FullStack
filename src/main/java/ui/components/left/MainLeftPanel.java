@@ -2,16 +2,14 @@ package ui.components.left;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import models.OrderBookEntry;
 import services.BinanceStreaming;
 import ui.UIConfiguration;
 import ui.components.center.OrderPanel;
 import utils.NumberConversion;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
