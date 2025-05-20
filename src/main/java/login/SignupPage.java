@@ -1,6 +1,8 @@
 package login;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import model.User;
+import model.UserStore;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -88,7 +90,7 @@ public class SignupPage extends JPanel {
         btnSignup.addActionListener(e -> {
             String firstName = txtFirstName.getText().trim();
             String lastName = txtLastName.getText().trim();
-            String username = txtUsername.getText().trim();
+            String userName = txtUsername.getText().trim();
             String password = new String(txtPassword.getPassword());
             String confirmPassword = new String(txtPasswordConfirm.getPassword());
 
@@ -97,7 +99,7 @@ public class SignupPage extends JPanel {
                 lblMessage.setText("First name is required.");
             } else if (lastName.isEmpty()) {
                 lblMessage.setText("Last name is required.");
-            } else if (username.isEmpty()) {
+            } else if (userName.isEmpty()) {
                 lblMessage.setText("Username is required.");
             } else if (password.isEmpty()) {
                 lblMessage.setText("Password is required.");
@@ -106,6 +108,8 @@ public class SignupPage extends JPanel {
             } else if (!password.equals(confirmPassword)) {
                 lblMessage.setText("Passwords do not match.");
             } else {
+                User newUser = new User(firstName, lastName, userName, password);
+                UserStore.addUser(newUser);
                 lblMessage.setForeground(new Color(0, 153, 0)); // xanh lá
                 lblMessage.setText("Account created successfully!");
             }
