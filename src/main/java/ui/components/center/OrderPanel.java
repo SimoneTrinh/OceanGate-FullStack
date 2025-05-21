@@ -11,6 +11,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -18,7 +20,7 @@ public class OrderPanel extends JPanel {
     public static final HashMap<String, JTextField> textFields = new HashMap<>();
     public static final HashMap<String, JButton> buttons = new HashMap<>();
     public static final HashMap<String, JComboBox<String>> comboBoxes = new HashMap<>();
-    public static final String BUY_TYPE= "BUY_TYPE";
+    public static final String BUY_TYPE = "BUY_TYPE";
     public static final String SELL_TYPE = "SELL_TYPE";
     public static final String MARKET_ORDER = "Market Order";
     public static final String LIMIT_ORDER = "Limit Order";
@@ -32,6 +34,7 @@ public class OrderPanel extends JPanel {
     private String SELL_TOTAL_PRICE_FIELD = "SELL_TOTAL_PRICE_FIELD";
     private String PLACE_BUY_BTN = "PLACE_BUY_BTN";
     private String PLACE_SELL_BTN = "PLACE_SELL_BTN";
+    private static JDialog dialog; // workaround for focus
 
 
     public OrderPanel(LayoutManager layout) {
@@ -113,12 +116,20 @@ public class OrderPanel extends JPanel {
         jPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         jPanel.add(new JLabel("Price"));
         JTextField priceField = new JTextField("0.00", 10);
-        priceField.setEditable(true);
+        priceField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showInputDialog();
+                dialog.dispose();
+            }
+        });
+
 
         priceField.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) {
                 onTextChanged();
             }
+
             public void removeUpdate(DocumentEvent e) {
                 onTextChanged();
             }
@@ -128,7 +139,7 @@ public class OrderPanel extends JPanel {
             }
 
             private void onTextChanged() {
-                if(!Objects.equals(priceField.getText(), "")) {
+                if (!Objects.equals(priceField.getText(), "")) {
                     if (textFieldID.equals(BUY_PRICE_FIELD)) {
                         String price = priceField.getText();
                         String amount = textFields.get(BUY_AMOUNT_FIELD).getText();
@@ -160,6 +171,7 @@ public class OrderPanel extends JPanel {
             public void insertUpdate(DocumentEvent e) {
                 onTextChanged();
             }
+
             public void removeUpdate(DocumentEvent e) {
                 onTextChanged();
             }
@@ -169,7 +181,7 @@ public class OrderPanel extends JPanel {
             }
 
             private void onTextChanged() {
-                if(!Objects.equals(amountField.getText(), "")) {
+                if (!Objects.equals(amountField.getText(), "")) {
                     if (textFieldID.equals(BUY_AMOUNT_FIELD)) {
                         String price = textFields.get(BUY_PRICE_FIELD).getText();
                         String amount = amountField.getText();
@@ -243,5 +255,21 @@ public class OrderPanel extends JPanel {
         orderButton.setPreferredSize(new Dimension(400, 30));
         jPanel.add(orderButton);
         return jPanel;
+    }
+
+    public static void showInputDialog() {
+        JOptionPane optionPane = new JOptionPane(
+                "Enter your name:",
+                JOptionPane.QUESTION_MESSAGE,
+                JOptionPane.OK_CANCEL_OPTION,
+                null,
+                null,
+                null
+        );
+        optionPane.setWantsInput(true);
+        dialog = optionPane.createDialog(null, "Custom Input Dialog");
+        dialog.setModal(false); // workaround non-blocking because cefBrowser will steal focus
+        dialog.setVisible(true);
+
     }
 }
