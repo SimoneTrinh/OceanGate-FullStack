@@ -2,7 +2,6 @@ package ui.components.center.TradeTable;
 
 import models.TradeHistory;
 
-
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 

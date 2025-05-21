@@ -1,9 +1,7 @@
 package controller;
 
-import dataAccess.OrderDAO;
 import dataAccess.OrderHistoryDAO;
 import models.TradeHistory;
-import models.TradeOrder;
 import ui.components.center.TradeTablePanel;
 
 import java.sql.SQLException;

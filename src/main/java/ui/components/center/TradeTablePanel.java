@@ -86,10 +86,15 @@ public class TradeTablePanel extends JPanel {
         OrderHistoryTableModel model = new OrderHistoryTableModel(data);
         orderHistoryTable = new JTable(model);
 
-        JScrollPane scrollPane = new JScrollPane(orderHistoryPanel);
+        JPanel stat = new JPanel();
+        stat.setLayout(new BoxLayout(stat, BoxLayout.Y_AXIS));
+        stat.add(orderHistoryTable);
+
+        JScrollPane scrollPane = new JScrollPane(stat);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setColumnHeaderView(orderHistoryTable.getTableHeader());
         orderHistoryPanel = scrollPane;
     }
 

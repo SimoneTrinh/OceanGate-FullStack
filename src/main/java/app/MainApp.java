@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class MainApp {
     public static void main(String[] args) {
-//        FlatLightLaf.setup();
+        FlatLightLaf.setup();
         DBManager.connect();
 
         ChartHosting chart = new ChartHosting();

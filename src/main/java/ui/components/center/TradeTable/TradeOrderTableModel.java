@@ -28,8 +28,8 @@ public class TradeOrderTableModel extends AbstractTableModel {
     }
 
     @Override
-    public String getColumnName(int col) {
-        return columnNames[col];
+    public String getColumnName(int column) {
+        return columnNames[column];
     }
 
     @Override
