@@ -35,8 +35,4 @@ public class CryptoUserInfo extends JPanel {
 
         add(tabbedPane, BorderLayout.CENTER);
     }
-
-    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> new CryptoUserInfo().setVisible(true));
-    }
 }
