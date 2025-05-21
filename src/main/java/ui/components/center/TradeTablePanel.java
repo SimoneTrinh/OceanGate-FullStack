@@ -1,6 +1,6 @@
 package ui.components.center;
 
-import controller.OrderController;
+import controller.LoadOrderController;
 import controller.OrderHistoryController;
 import models.TradeHistory;
 import models.TradeOrder;
@@ -18,8 +18,8 @@ import java.util.List;
 
 public class TradeTablePanel extends JPanel {
     private JPanel cardPanel;
-    private OrderController orderController;
-    private OrderHistoryController orderHistoryController;
+    public static LoadOrderController orderController;
+    public static OrderHistoryController orderHistoryController;
     private JScrollPane orderPanel;
     private JTable orderTable;
     private JScrollPane orderHistoryPanel;
@@ -31,7 +31,7 @@ public class TradeTablePanel extends JPanel {
         setPreferredSize(new Dimension(UIConfiguration.TRADE_TABLE_WIDTH, UIConfiguration.TRADE_TABLE_HEIGHT));
         setBackground(Color.green);
         try {
-            orderController = new OrderController(this);
+            orderController = new LoadOrderController(this);
             orderHistoryController = new OrderHistoryController(this);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -79,6 +79,8 @@ public class TradeTablePanel extends JPanel {
     public void setDataOrderTable(List<TradeOrder> data) {
         TradeOrderTableModel model = new TradeOrderTableModel(data);
         orderTable.setModel(model);
+        orderTable.getColumn("Action").setCellRenderer(new ButtonRenderer());
+        orderTable.getColumn("Action").setCellEditor(new CancelButton(new JCheckBox(), model));
     }
 
 

@@ -3,16 +3,18 @@ package ui.components.center.TradeTable;
 import models.TradeHistory;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.Comparator;
 import java.util.List;
 
 public class OrderHistoryTableModel extends AbstractTableModel {
     private final String[] columnNames = {
-            "ID", "Type", "Base", "Quote", "Price", "Amount", "Filled", "Status", "Created_At"
+            "Index", "Type", "Base", "Quote", "Price", "Amount", "Filled", "Status", "Created_At"
     };
 
     private final List<TradeHistory> data;
 
     public OrderHistoryTableModel(List<TradeHistory> tradeHistoryList) {
+        tradeHistoryList.sort(Comparator.comparingInt(TradeHistory::getId)); // Sort by id
         data = tradeHistoryList;
     }
 
@@ -36,7 +38,7 @@ public class OrderHistoryTableModel extends AbstractTableModel {
         TradeHistory entry = data.get(rowIndex);
         switch (columnIndex) {
             case 0 -> {
-                return entry.getId();
+                return rowIndex + 1;
             }
             case 1 -> {
                 return entry.getType();

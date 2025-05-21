@@ -20,7 +20,7 @@ public class OrderHistoryDAO {
 
     public List<TradeHistory> getOrdersHistoryByUserId(int userId) throws SQLException {
         List<TradeHistory> orders = new ArrayList<>();
-        String sql = "SELECT o.id, ot.type as order_type, c1.name as base_currency, c2.name as quote_currency, o.price, o.amount, o.filled, os.status, o.created_at\n" +
+        String sql = "SELECT o.id, ot.type as order_type, c1.code as base_currency, c2.code as quote_currency, o.price, o.amount, o.filled, os.status, o.created_at\n" +
                 "FROM orders o \n" +
                 "JOIN currencies c1 \n" +
                 "ON o.base_currency_id = c1.id \n" +

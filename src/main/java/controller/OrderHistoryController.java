@@ -2,6 +2,7 @@ package controller;
 
 import dataAccess.OrderHistoryDAO;
 import models.TradeHistory;
+import models.TradeOrder;
 import ui.components.center.TradeTablePanel;
 
 import java.sql.SQLException;
@@ -20,6 +21,15 @@ public class OrderHistoryController {
         try {
             List<TradeHistory> orders = dao.getOrdersHistoryByUserId(userId);
             view.createOrdersHistoryTable(orders);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void reLoadOrders(int userId) {
+        try {
+            List<TradeHistory> orders = dao.getOrdersHistoryByUserId(userId);
+            view.setDataOrderHistoryTable(orders);
         } catch (SQLException e) {
             e.printStackTrace();
         }

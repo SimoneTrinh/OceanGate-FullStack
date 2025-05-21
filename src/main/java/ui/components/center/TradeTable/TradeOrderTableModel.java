@@ -1,19 +1,22 @@
 package ui.components.center.TradeTable;
 
+import models.TradeHistory;
 import models.TradeOrder;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.Comparator;
 import java.util.List;
 
 public class TradeOrderTableModel extends AbstractTableModel {
 
     private final String[] columnNames = {
-            "ID", "Type", "Base", "Quote", "Price", "Amount", "Filled", "Status", "Action"
+            "Index", "Type", "Base", "Quote", "Price", "Amount", "Filled", "Status", "Action"
     };
 
     private final List<TradeOrder> data;
 
     public TradeOrderTableModel(List<TradeOrder> tradeOrderList) {
+        tradeOrderList.sort(Comparator.comparingInt(TradeOrder::getId)); // Sort by id
         data = tradeOrderList;
     }
 
@@ -37,7 +40,7 @@ public class TradeOrderTableModel extends AbstractTableModel {
         TradeOrder entry = data.get(rowIndex);
         switch (columnIndex) {
             case 0 -> {
-                return entry.getId();
+                return rowIndex + 1;
             }
             case 1 -> {
                 return entry.getType();
@@ -83,9 +86,9 @@ public class TradeOrderTableModel extends AbstractTableModel {
         return data.get(row).getId();
     }
 
-    public void cancelOrderAtRow(int row) {
-        // Example logic: mark status as CANCELLED
-        data.get(row).setStatus("CANCELLED");;
-        fireTableRowsUpdated(row, row);
-    }
+//    public void cancelOrderAtRow(int row) {
+//        // Example logic: mark status as CANCELLED
+//        data.get(row).setStatus("CANCELLED");;
+//        fireTableRowsUpdated(row, row);
+//    }
 }

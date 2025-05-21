@@ -7,12 +7,12 @@ import ui.components.center.TradeTablePanel;
 import java.sql.SQLException;
 import java.util.List;
 
-public class OrderController {
+public class LoadOrderController {
 
     private TradeTablePanel view;
     private OrderDAO dao;
 
-    public OrderController(TradeTablePanel view) throws SQLException {
+    public LoadOrderController(TradeTablePanel view) throws SQLException {
         this.view = view;
         this.dao = new OrderDAO();
     }
@@ -21,6 +21,15 @@ public class OrderController {
         try {
             List<TradeOrder> orders = dao.getOrdersByUserId(userId);
             view.createOrdersTable(orders);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void reLoadOrders(int userId) {
+        try {
+            List<TradeOrder> orders = dao.getOrdersByUserId(userId);
+            view.setDataOrderTable(orders);
         } catch (SQLException e) {
             e.printStackTrace();
         }

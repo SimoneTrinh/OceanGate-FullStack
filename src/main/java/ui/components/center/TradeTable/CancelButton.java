@@ -1,5 +1,10 @@
 package ui.components.center.TradeTable;
 
+import ui.components.center.OrderPanel;
+import ui.components.center.TradeTablePanel;
+import utils.Constants;
+import utils.LocalStorage;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -28,8 +33,12 @@ public class CancelButton extends DefaultCellEditor {
     public Object getCellEditorValue() {
         if (clicked) {
             Object orderId = model.getOrderIdAtRow(row);
-            model.cancelOrderAtRow(row); // simulate cancel
+//            model.cancelOrderAtRow(row); // simulate cancel
             JOptionPane.showMessageDialog(button, "Cancelled Order ID: " + orderId);
+            int userID = Integer.parseInt(Constants.LOCAL_STORAGE.get(LocalStorage.USER_ID));
+            OrderPanel.placeOrderController.cancelOrder(userID, Integer.parseInt(orderId.toString()));
+            TradeTablePanel.orderController.reLoadOrders(userID);
+            TradeTablePanel.orderHistoryController.reLoadOrders(userID);
         }
         clicked = false;
         return "Cancel";

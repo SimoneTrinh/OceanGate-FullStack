@@ -7,6 +7,8 @@ import services.DBManager;
 import ui.components.center.MainCenterPanel;
 import ui.components.left.MainLeftPanel;
 import ui.components.top.MainTopPanel;
+import utils.Constants;
+import utils.LocalStorage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +18,7 @@ public class MainApp {
     public static void main(String[] args) {
         FlatLightLaf.setup();
         DBManager.connect();
+        Constants.LOCAL_STORAGE.put(LocalStorage.USER_ID, "1");
 
         ChartHosting chart = new ChartHosting();
         try {

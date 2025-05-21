@@ -1,7 +1,13 @@
 package ui.components.center;
 
+import controller.LoadOrderController;
+import controller.PlaceOrderController;
+import models.PlaceOrderPayload;
+import models.TradeOrder;
 import ui.UIConfiguration;
 import ui.components.top.TopNavPanel;
+import utils.Constants;
+import utils.LocalStorage;
 import utils.NumberConversion;
 import utils.TradingPair;
 
@@ -13,6 +19,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -35,7 +42,7 @@ public class OrderPanel extends JPanel {
     private String PLACE_BUY_BTN = "PLACE_BUY_BTN";
     private String PLACE_SELL_BTN = "PLACE_SELL_BTN";
     private static JDialog dialog; // workaround for focus
-
+    public static PlaceOrderController placeOrderController;
 
     public OrderPanel(LayoutManager layout) {
         super(layout);
@@ -43,6 +50,12 @@ public class OrderPanel extends JPanel {
         setMaximumSize(new Dimension(UIConfiguration.ORDER_MENU_MAX_WIDTH, UIConfiguration.ORDER_MENU_HEIGHT));
         setMinimumSize(new Dimension(UIConfiguration.ORDER_MENU_MIN_WIDTH, UIConfiguration.ORDER_MENU_HEIGHT));
         setBackground(Color.ORANGE);
+
+        try {
+            placeOrderController = new PlaceOrderController(this);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         // Main layout
         setLayout(new BorderLayout());
@@ -248,6 +261,13 @@ public class OrderPanel extends JPanel {
 
         if (buttonID.equals(PLACE_BUY_BTN)) {
             orderButton.setText("Buy BTC");
+            orderButton.addActionListener(l -> {
+                performPlaceOrder("BUY");
+            });
+        }else if(buttonID.equals(PLACE_SELL_BTN)){
+            orderButton.addActionListener(l -> {
+                performPlaceOrder("SELL");
+            });
         }
         buttons.put(buttonID, orderButton);
         orderButton.setBackground(new Color(0, 150, 0));
@@ -270,6 +290,20 @@ public class OrderPanel extends JPanel {
         dialog = optionPane.createDialog(null, "Custom Input Dialog");
         dialog.setModal(false); // workaround non-blocking because cefBrowser will steal focus
         dialog.setVisible(true);
-
     }
+
+    private void performPlaceOrder(String orderType) {
+        int userID = Integer.parseInt(Constants.LOCAL_STORAGE.get(LocalStorage.USER_ID));
+        String baseCurrency = Constants.LOCAL_STORAGE.get(LocalStorage.BASE_CURRENCY);
+        String quoteCurrency = Constants.LOCAL_STORAGE.get(LocalStorage.QUOTE_CURRENCY);
+        float price = Float.parseFloat(textFields.get(BUY_PRICE_FIELD).getText());
+        float amount = Float.parseFloat(textFields.get(BUY_AMOUNT_FIELD).getText());
+        float filled = 0;
+        String status = "OPEN";
+        PlaceOrderPayload payload = new PlaceOrderPayload(userID, orderType, baseCurrency, quoteCurrency, price, amount, filled, status);
+        placeOrderController.placeOrder(payload);
+        TradeTablePanel.orderController.reLoadOrders(userID);
+        TradeTablePanel.orderHistoryController.reLoadOrders(userID);
+    }
+
 }
