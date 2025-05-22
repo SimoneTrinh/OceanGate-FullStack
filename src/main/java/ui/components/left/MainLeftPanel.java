@@ -139,11 +139,17 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
         updateOrderBook(listBuy, listAsk, BUY_TABLE);
         Constants.BEST_ORDER.put(LocalStorage.BEST_BUY, listBuy.get(0));
 
-        if(OrderPanel.placeOrderController != null){
+        if (OrderPanel.placeOrderController != null) {
             List<TradeHistory> listCurrentBuy = OrderPanel.placeOrderController.getAllAvailableOpenOrder("BUY");
             List<TradeHistory> listCurrentSell = OrderPanel.placeOrderController.getAllAvailableOpenOrder("SELL");
             OrderMatching om = new OrderMatching(listCurrentSell, listCurrentBuy, listSell.get(0), listBuy.get(0));
             om.matchingSellSQL();
+            om.matchingBuySQL();
+
+            if (TradeTablePanel.orderController != null) {
+                TradeTablePanel.orderController.reLoadOrders(Integer.parseInt(Constants.LOCAL_STORAGE.get(LocalStorage.USER_ID)));
+                TradeTablePanel.orderHistoryController.reLoadOrders(Integer.parseInt(Constants.LOCAL_STORAGE.get(LocalStorage.USER_ID)));
+            }
         }
 
 

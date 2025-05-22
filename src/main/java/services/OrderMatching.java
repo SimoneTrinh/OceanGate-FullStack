@@ -96,7 +96,7 @@ public class OrderMatching {
 
     // v2 - with sql
     public void matchingSellSQL() {
-        System.out.println("Running matching:");
+        System.out.println("Running matching sell:");
         List<TradeHistory> acceptToMatch = new ArrayList<>();
         float buyPrice = Float.parseFloat(bestMatchingBuy.getPrice()); // Assume getPrice() returns String
         for (TradeHistory sellOrder : listCurrentSell) {
@@ -106,9 +106,11 @@ public class OrderMatching {
         }
         if (!listCurrentSell.isEmpty()) {
             acceptToMatch.add(listCurrentSell.get(0)); // force matching
+        } else {
+            System.out.println("Not found potential matching sell");
         }
         if (!acceptToMatch.isEmpty()) {
-            System.out.println("Found potential matching");
+            System.out.println("Found potential matching sell");
             float remainingAmountToMatch = Float.parseFloat(bestMatchingSell.getAmount()); // Assume getAmount() returns String
             List<TradeHistory> toRemove = new ArrayList<>();
 
@@ -143,12 +145,59 @@ public class OrderMatching {
             }
 
             listCurrentSell.removeAll(toRemove);
-
-            TradeTablePanel.orderController.reLoadOrders(Integer.parseInt(Constants.LOCAL_STORAGE.get(LocalStorage.USER_ID)));
-            TradeTablePanel.orderHistoryController.reLoadOrders(Integer.parseInt(Constants.LOCAL_STORAGE.get(LocalStorage.USER_ID)));
         }
+    }
 
-        System.out.println("Not found potential matching");
+    public void matchingBuySQL() {
+        System.out.println("Running matching buy:");
+        List<TradeHistory> acceptToMatch = new ArrayList<>();
+        float buyPrice = Float.parseFloat(bestMatchingSell.getPrice()); // Assume getPrice() returns String
+        for (TradeHistory sellOrder : listCurrentBuy) {
+            if (Math.abs(sellOrder.getPrice() - buyPrice) < EPSILON) {
+                acceptToMatch.add(sellOrder);
+            }
+        }
+        if (!listCurrentBuy.isEmpty()) {
+            acceptToMatch.add(listCurrentBuy.get(0)); // force matching
+        } else {
+            System.out.println("Not found potential matching buy");
+        }
+        if (!acceptToMatch.isEmpty()) {
+            System.out.println("Found potential matching buy");
+            float remainingAmountToMatch = Float.parseFloat(bestMatchingBuy.getAmount()); // Assume getAmount() returns String
+            List<TradeHistory> toRemove = new ArrayList<>();
 
+            for (TradeHistory buyOrder : acceptToMatch) {
+                float buyRemaining = getRemainingAmountToMatch(buyOrder); // amount - filled
+                if (buyRemaining <= 0) {
+                    continue; // Skip already filled orders
+                }
+
+                if (remainingAmountToMatch >= buyRemaining) {
+                    buyOrder.setFilledAsOrder(); // Fully filled
+//                    OrderPanel.placeOrderController.createTrade(0, sellOrder.getOrderID(), sellOrder.getPrice(), sellOrder.getAmount());
+                    OrderPanel.placeOrderController.updateOrder(buyOrder.getOrderID(), buyOrder.getFilled(), Constants.ORDER_STATUS.get(buyOrder.getStatus()));
+                    OrderPanel.placeOrderController.updateMatchingWalletBalances(buyOrder.getOrderID(), buyOrder.getAmount(), buyOrder.getPrice(), Constants.SYMBOL_MAP.get(buyOrder.getBaseCurrency()), Constants.SYMBOL_MAP.get(buyOrder.getQuoteCurrency()));
+                    // create trade, update order, update user wallet
+
+                    toRemove.add(buyOrder);
+                    remainingAmountToMatch -= buyRemaining;
+                } else if (remainingAmountToMatch > 0) {
+                    // create trade, update order == part fill, update user wallet
+                    buyOrder.setFilled(buyOrder.getFilled() + remainingAmountToMatch); // Partial fill
+                    buyOrder.setStatus("PARTIALLY_FILLED");
+//                    OrderPanel.placeOrderController.createTrade(3, sellOrder.getOrderID(), sellOrder.getPrice(), sellOrder.getAmount());
+                    OrderPanel.placeOrderController.updateOrder(buyOrder.getOrderID(), buyOrder.getFilled(), Constants.ORDER_STATUS.get(buyOrder.getStatus()));
+                    OrderPanel.placeOrderController.updateMatchingWalletBalances(buyOrder.getOrderID(), buyOrder.getAmount(), buyOrder.getPrice(), Constants.SYMBOL_MAP.get(buyOrder.getBaseCurrency()), Constants.SYMBOL_MAP.get(buyOrder.getQuoteCurrency()));
+
+                    remainingAmountToMatch = 0;
+                    break;
+                } else {
+                    break; // No more to match
+                }
+            }
+
+            listCurrentSell.removeAll(toRemove);
+        }
     }
 }
