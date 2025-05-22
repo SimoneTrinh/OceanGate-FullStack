@@ -14,7 +14,7 @@ public class OrderHistoryTableModel extends AbstractTableModel {
     private final List<TradeHistory> data;
 
     public OrderHistoryTableModel(List<TradeHistory> tradeHistoryList) {
-        tradeHistoryList.sort(Comparator.comparingInt(TradeHistory::getId)); // Sort by id
+        tradeHistoryList.sort(Comparator.comparingInt(TradeHistory::getOrderID)); // Sort by id
         data = tradeHistoryList;
     }
 

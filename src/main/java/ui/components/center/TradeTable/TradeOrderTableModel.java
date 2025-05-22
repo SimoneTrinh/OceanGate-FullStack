@@ -16,7 +16,7 @@ public class TradeOrderTableModel extends AbstractTableModel {
     private final List<TradeOrder> data;
 
     public TradeOrderTableModel(List<TradeOrder> tradeOrderList) {
-        tradeOrderList.sort(Comparator.comparingInt(TradeOrder::getId)); // Sort by id
+        tradeOrderList.sort(Comparator.comparingInt(TradeOrder::getOrderID)); // Sort by id
         data = tradeOrderList;
     }
 
@@ -83,7 +83,7 @@ public class TradeOrderTableModel extends AbstractTableModel {
 //    }
 
     public Object getOrderIdAtRow(int row) {
-        return data.get(row).getId();
+        return data.get(row).getOrderID();
     }
 
 //    public void cancelOrderAtRow(int row) {

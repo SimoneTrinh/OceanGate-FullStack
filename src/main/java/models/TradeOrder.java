@@ -8,7 +8,7 @@ public class TradeOrder extends BaseTrade {
         super(type, baseCurrency, quoteCurrency, price, amount, filled, status);
         this.orderID = orderID;
     }
-    public int getId() {
+    public int getOrderID() {
         return orderID;
     }
 }

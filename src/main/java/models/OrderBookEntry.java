@@ -1,23 +1,10 @@
 package models;
 
-public class OrderBookEntry {
-    private String price;
-    private String amount;
+public class OrderBookEntry extends BaseOrder {
     private String total;
-
-
     public OrderBookEntry(String price, String amount, String total) {
-        this.price = price;
-        this.amount = amount;
+        super(price, amount);
         this.total = total;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public String getAmount() {
-        return amount;
     }
 
     public String getTotal() {

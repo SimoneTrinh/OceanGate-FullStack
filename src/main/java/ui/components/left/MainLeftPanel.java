@@ -3,9 +3,14 @@ package ui.components.left;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import models.OrderBookEntry;
+import models.TradeHistory;
 import services.BinanceStreaming;
+import services.OrderMatching;
 import ui.UIConfiguration;
 import ui.components.center.OrderPanel;
+import ui.components.center.TradeTablePanel;
+import utils.Constants;
+import utils.LocalStorage;
 import utils.NumberConversion;
 
 import javax.swing.*;
@@ -127,10 +132,20 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
         List<OrderBookEntry> listSell = new ArrayList<>();
         JsonArray listBid = jsonMessage.getAsJsonArray("b");
         updateOrderBook(listSell, listBid, SELL_TABLE);
+        Constants.BEST_ORDER.put(LocalStorage.BEST_SELL, listSell.get(0));
 
         List<OrderBookEntry> listBuy = new ArrayList<>();
         JsonArray listAsk = jsonMessage.getAsJsonArray("a");
         updateOrderBook(listBuy, listAsk, BUY_TABLE);
+        Constants.BEST_ORDER.put(LocalStorage.BEST_BUY, listBuy.get(0));
+
+        if(OrderPanel.placeOrderController != null){
+            List<TradeHistory> listCurrentBuy = OrderPanel.placeOrderController.getAllAvailableOpenOrder("BUY");
+            List<TradeHistory> listCurrentSell = OrderPanel.placeOrderController.getAllAvailableOpenOrder("SELL");
+            OrderMatching om = new OrderMatching(listCurrentSell, listCurrentBuy, listSell.get(0), listBuy.get(0));
+            om.matchingSellSQL();
+        }
+
 
         System.out.println("List sell: " + listSell.size() + " List buy: " + listBuy.size());
     }

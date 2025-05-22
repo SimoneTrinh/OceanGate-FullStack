@@ -264,7 +264,7 @@ public class OrderPanel extends JPanel {
             orderButton.addActionListener(l -> {
                 performPlaceOrder("BUY");
             });
-        }else if(buttonID.equals(PLACE_SELL_BTN)){
+        } else if (buttonID.equals(PLACE_SELL_BTN)) {
             orderButton.addActionListener(l -> {
                 performPlaceOrder("SELL");
             });
@@ -293,11 +293,18 @@ public class OrderPanel extends JPanel {
     }
 
     private void performPlaceOrder(String orderType) {
+        float price, amount;
         int userID = Integer.parseInt(Constants.LOCAL_STORAGE.get(LocalStorage.USER_ID));
         String baseCurrency = Constants.LOCAL_STORAGE.get(LocalStorage.BASE_CURRENCY);
         String quoteCurrency = Constants.LOCAL_STORAGE.get(LocalStorage.QUOTE_CURRENCY);
-        float price = Float.parseFloat(textFields.get(BUY_PRICE_FIELD).getText());
-        float amount = Float.parseFloat(textFields.get(BUY_AMOUNT_FIELD).getText());
+        if (orderType.equals("BUY")) {
+            price = Float.parseFloat(textFields.get(BUY_PRICE_FIELD).getText());
+            amount = Float.parseFloat(textFields.get(BUY_AMOUNT_FIELD).getText());
+        }else {
+            price = Float.parseFloat(textFields.get(SELL_PRICE_FIELD).getText());
+            amount = Float.parseFloat(textFields.get(SELL_AMOUNT_FIELD).getText());
+        }
+
         float filled = 0;
         String status = "OPEN";
         PlaceOrderPayload payload = new PlaceOrderPayload(userID, orderType, baseCurrency, quoteCurrency, price, amount, filled, status);

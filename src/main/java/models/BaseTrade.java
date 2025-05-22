@@ -10,7 +10,7 @@ public class BaseTrade {
     private String status;
 
     public BaseTrade(String type, String baseCurrency, String quoteCurrency,
-                      float price, float amount, float filled, String status) {
+                     float price, float amount, float filled, String status) {
         this.type = type;
         this.baseCurrency = baseCurrency;
         this.quoteCurrency = quoteCurrency;
@@ -19,12 +19,15 @@ public class BaseTrade {
         this.filled = filled;
         this.status = status;
     }
+
     public String getType() {
         return type;
     }
+
     public String getBaseCurrency() {
         return baseCurrency;
     }
+
     public String getQuoteCurrency() {
         return quoteCurrency;
     }
@@ -32,16 +35,38 @@ public class BaseTrade {
     public float getPrice() {
         return price;
     }
+
     public float getAmount() {
         return amount;
     }
+
     public float getFilled() {
         return filled;
     }
-    public String getStatus(){
+
+    public String getStatus() {
         return status;
     }
-    public void setStatus(String status){
+
+    public void setStatus(String status) {
         this.status = status;
+    }
+//    public void setFilled(float filled){
+//        this.filled = filled;
+//    }
+//    public void setFilledAsOrder(){
+//        this.filled = amount;
+//    }
+
+    public void setFilled(float filled) {
+        this.filled = filled;
+        if (Math.abs(filled - amount) < 0.0001f) {
+            this.status = "CLOSED";
+        }
+    }
+
+    public void setFilledAsOrder() {
+        this.filled = this.amount;
+        this.status = "CLOSED";
     }
 }

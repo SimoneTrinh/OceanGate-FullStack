@@ -1,5 +1,7 @@
 package utils;
 
+import models.BaseOrder;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,5 +25,7 @@ public class Constants {
         put("CLOSED", 2);
         put("PARTIALLY_FILLED", 3);
     }};
+
+    public static HashMap<String, BaseOrder> BEST_ORDER = new HashMap<>();
 
 }
