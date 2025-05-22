@@ -7,6 +7,7 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 public class SignupPage extends JPanel {
 
@@ -15,6 +16,8 @@ public class SignupPage extends JPanel {
     private JTextField txtUsername;
     private JPasswordField txtPassword;
     private JPasswordField txtPasswordConfirm;
+    private JTextField txtEmail;
+    private JTextField txtPhone;
     private JButton btnSignup;
     private JButton btnToSignIn;
     private JLabel lblMessage; // Label thông báo
@@ -29,6 +32,8 @@ public class SignupPage extends JPanel {
         txtUsername = new JTextField();
         txtPassword = new JPasswordField();
         txtPasswordConfirm = new JPasswordField();
+        txtEmail = new JTextField();
+        txtPhone = new JTextField();
         btnSignup = new JButton("Sign up");
         btnToSignIn = new JButton("<html>Back to Sign In</html>");
         lblMessage = new JLabel(""); // Label hiển thị thông báo
@@ -58,6 +63,8 @@ public class SignupPage extends JPanel {
         txtUsername.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your new username");
         txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your new password");
         txtPasswordConfirm.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Re-type your new password");
+        txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your email address");
+        txtPhone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your phone number");
 
         // Custom button "Back to Sign In"
         btnToSignIn.setContentAreaFilled(false);
@@ -93,25 +100,44 @@ public class SignupPage extends JPanel {
             String userName = txtUsername.getText().trim();
             String password = new String(txtPassword.getPassword());
             String confirmPassword = new String(txtPasswordConfirm.getPassword());
+            String email = txtEmail.getText().trim();
+            String phone = txtPhone.getText().trim();
 
-            // Kiểm tra từng trường theo thứ tự
-            if (firstName.isEmpty()) {
-                lblMessage.setText("First name is required.");
-            } else if (lastName.isEmpty()) {
-                lblMessage.setText("Last name is required.");
-            } else if (userName.isEmpty()) {
-                lblMessage.setText("Username is required.");
-            } else if (password.isEmpty()) {
-                lblMessage.setText("Password is required.");
-            } else if (confirmPassword.isEmpty()) {
-                lblMessage.setText("Please confirm your password.");
-            } else if (!password.equals(confirmPassword)) {
+            Map<String, String> requiredFields = Map.of(
+                    "First name", firstName,
+                    "Last name", lastName,
+                    "Username", userName,
+                    "Email", email,
+                    "Phone number", phone,
+                    "Password", password,
+                    "Confirm password", confirmPassword
+            );
+
+            // Kiểm tra field rỗng
+            for (Map.Entry<String, String> entry : requiredFields.entrySet()) {
+                if (entry.getValue().isEmpty()) {
+                    lblMessage.setText(entry.getKey() + " is required.");
+                    return;
+                }
+            }
+            // Kiểm tra xác nhận mật khẩu
+            if (!password.equals(confirmPassword)) {
                 lblMessage.setText("Passwords do not match.");
-            } else {
-                User newUser = new User(firstName, lastName, userName, password);
-                UserStore.addUser(newUser);
-                lblMessage.setForeground(new Color(0, 153, 0)); // xanh lá
-                lblMessage.setText("Account created successfully!");
+                return;
+            }
+            else {
+                try {
+                    User newUser = new User(firstName, lastName, userName, password, email, phone);
+                    newUser.setEmail(email);  // sẽ throw nếu email sai định dạng
+                    newUser.setPhone(phone);  // sẽ throw nếu phone sai định dạng
+                    UserStore.addUser(newUser);
+
+                    lblMessage.setForeground(new Color(0, 153, 0)); // xanh lá
+                    lblMessage.setText("Account created successfully!");
+                } catch (IllegalArgumentException ex) {
+                    lblMessage.setForeground(Color.RED);
+                    lblMessage.setText(ex.getMessage());
+                }
             }
         });
 
@@ -125,6 +151,10 @@ public class SignupPage extends JPanel {
         panel.add(txtLastName);
         panel.add(new JLabel("Username:"), "gapy 8");
         panel.add(txtUsername);
+        panel.add(new JLabel("Email:"), "gapy 8");
+        panel.add(txtEmail);
+        panel.add(new JLabel("Phone:"), "gapy 8");
+        panel.add(txtPhone);
         panel.add(new JLabel("Password:"), "gapy 8");
         panel.add(txtPassword);
         panel.add(new JLabel("Password Confirm:"), "gapy 8");

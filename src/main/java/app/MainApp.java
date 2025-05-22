@@ -1,9 +1,10 @@
 package app;
 
+import CryptoUserInfo.CryptoUserInfo;
 import chart.ChartHosting;
+import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import login.AuthDialog;
-import user_menu.UserMenu;
 import services.BinanceStreaming;
 import ui.components.center.MainCenterPanel;
 import ui.components.left.MainLeftPanel;
@@ -24,41 +25,14 @@ public class MainApp extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Setup giao diện Trading
-        FlatLightLaf.setup();
-
-        ChartHosting chart = new ChartHosting();
-        try {
-            chart.init();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        BinanceStreaming.getInstance().connect();
-
-        // CardLayout để chuyển đổi giữa các giao diện
-        cardLayout = new CardLayout();
-        mainContentPanel = new JPanel(cardLayout);
-        add(mainContentPanel, BorderLayout.CENTER);
-
-        // 1. Giao diện Trading chính
-        JPanel tradingPanel = createTradingPanel();
-
-        // 2. Giao diện UserMenu
-        UserMenu userMenu = new UserMenu();
-
-        // Add các màn hình vào card
-        mainContentPanel.add(tradingPanel, "TRADING");
-        mainContentPanel.add(userMenu, "USER_MENU");
-
-        // Mặc định hiển thị trading
-        cardLayout.show(mainContentPanel, "TRADING");
 
         AtomicBoolean loginSuccess = new AtomicBoolean(false);
 
         // Login
         SwingUtilities.invokeLater(() -> {
             AuthDialog authDialog = new AuthDialog(this, () -> {
+                FlatLaf.registerCustomDefaultsSource("themes"); // thư mục chứa FlatLaf.properties
+                FlatLightLaf.setup();
                 loginSuccess.set(true);
                 this.setVisible(true);
             });
@@ -68,6 +42,37 @@ public class MainApp extends JFrame {
             if (!loginSuccess.get()) {
                 System.exit(0);
             }
+            FlatLaf.registerCustomDefaultsSource((String) null); // xóa custom source
+            FlatLightLaf.setup(); // hoặc UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            // Setup giao diện Trading
+            FlatLaf.registerCustomDefaultsSource("themes"); // thư mục chứa FlatLaf.properties
+            FlatLightLaf.setup();
+            ChartHosting chart = new ChartHosting();
+            try {
+                chart.init();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            BinanceStreaming.getInstance().connect();
+
+            // CardLayout để chuyển đổi giữa các giao diện
+            cardLayout = new CardLayout();
+            mainContentPanel = new JPanel(cardLayout);
+            add(mainContentPanel, BorderLayout.CENTER);
+
+            // 1. Giao diện Trading chính
+            JPanel tradingPanel = createTradingPanel();
+
+            // 2. Giao diện UserMenu
+            CryptoUserInfo userInfo = new CryptoUserInfo(e-> cardLayout.show(mainContentPanel, "TRADING"));
+
+            // Add các màn hình vào card
+            mainContentPanel.add(tradingPanel, "TRADING");
+            mainContentPanel.add(userInfo, "USER_MENU");
+
+            // Mặc định hiển thị trading
+            cardLayout.show(mainContentPanel, "TRADING");
         });
     }
 
