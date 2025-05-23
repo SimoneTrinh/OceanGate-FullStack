@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MainApp extends JFrame {
     private CardLayout cardLayout;
     private JPanel mainContentPanel;
+
     public MainApp() {
         // Setup giao diện app
         setTitle("Crypto Trading App");
@@ -28,6 +29,8 @@ public class MainApp extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        DBManager.connect();
+        Constants.LOCAL_STORAGE.put(LocalStorage.USER_ID, "1");
 
         AtomicBoolean loginSuccess = new AtomicBoolean(false);
 
@@ -39,11 +42,6 @@ public class MainApp extends JFrame {
                 loginSuccess.set(true);
                 this.setVisible(true);
             });
-public class MainApp {
-    public static void main(String[] args) {
-        FlatLightLaf.setup();
-        DBManager.connect();
-        Constants.LOCAL_STORAGE.put(LocalStorage.USER_ID, "1");
 
             authDialog.setVisible(true);
 
