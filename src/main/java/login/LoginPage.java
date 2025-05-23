@@ -1,5 +1,8 @@
 package login;
 import com.formdev.flatlaf.FlatClientProperties;
+import model.SessionManager;
+import model.User;
+import model.UserStore;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -33,9 +36,14 @@ public class LoginPage extends JPanel{
                 if (username.isEmpty() || password.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter your username and password");
                 }
-                else {
+                else if(UserStore.validateLogin(username, password)){
+                    User user = UserStore.findByUsername(username).get();
+                    SessionManager.login(user);
                     onLoginSuccess.run();
                     dialog.dispose();
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Invalid username or password");
                 }
             }
         });

@@ -1,0 +1,16 @@
+[
+  {
+    "firstName": "Mr",
+    "lastName": "Airport",
+    "username": "admin",
+    "password": "admin1",
+    "email": "admin@admin.net",
+    "phone": "090909090"
+  },
+  {
+    "firstName": "admin2",
+    "lastName": "admin2",
+    "username": "admin2",
+    "password": "admin2"
+  }
+]
