@@ -5,6 +5,8 @@ import services.BinanceStreaming;
 import ui.UIConfiguration;
 import ui.components.center.ChartAndOrderPanel;
 import ui.components.center.ChartPanel;
+import utils.Constants;
+import utils.LocalStorage;
 import utils.ResolutionInterval;
 import utils.TradingPair;
 
@@ -16,8 +18,8 @@ import java.awt.event.ActionListener;
 public class TopNavPanel extends JPanel {
 
     private final BinanceStreaming socketState = BinanceStreaming.getInstance();
-    public static String currentPair = "BTC/USDT"; // get from default and wwhen change, set it again
-    public static JComboBox<String> symbolDropdown = new JComboBox<>(new String[]{"BTC/USDT", "ETH/USDT", "XRP/USDT"});;
+    public static String currentPair = "BTC/USDT"; // get from default and when change, set it again
+    public static JComboBox<String> symbolDropdown = new JComboBox<>(new String[]{"BTC/USDT", "ETH/USDT", "XRP/USDT", "BNB/USDT"});;
     private JComboBox<String> resolutionDropdown;
     private JButton userMenuButton;
 
@@ -25,7 +27,8 @@ public class TopNavPanel extends JPanel {
     public TopNavPanel(LayoutManager layout, ActionListener userMenuListener) {
         super(layout);
         this.setPreferredSize(new Dimension(UIConfiguration.TOP_NAV_WIDTH, UIConfiguration.TOP_NAV_HEIGHT));
-
+        Constants.LOCAL_STORAGE.put(LocalStorage.BASE_CURRENCY, "BTC");
+        Constants.LOCAL_STORAGE.put(LocalStorage.QUOTE_CURRENCY, "USDT");
         // Main layout using BorderLayout
         setLayout(new BorderLayout());
 
@@ -70,6 +73,10 @@ public class TopNavPanel extends JPanel {
             currentPair = symbolDropDownText;
             TradingPair pair = TradingPair.splitSymbol(symbolDropDownText);
             InfoSymbolPanel.controls.get(InfoSymbolPanel.LABEL_CURRENT_SYMBOL).setText(currentPair);
+            // set on local storage
+            Constants.LOCAL_STORAGE.put(LocalStorage.BASE_CURRENCY, pair.getBaseAsset());
+            Constants.LOCAL_STORAGE.put(LocalStorage.QUOTE_CURRENCY, pair.getQuoteAsset());
+
             InfoSymbolPanel.controls.get(InfoSymbolPanel.VOLUME_24_BASE_ASSET_LABEL).setText("24h Volume (" + pair.getBaseAsset() + ")");
             InfoSymbolPanel.controls.get(InfoSymbolPanel.VOLUME_24_QUOTE_ASSET_LABEL).setText("24h Volume (" + pair.getQuoteAsset() + ")");
 

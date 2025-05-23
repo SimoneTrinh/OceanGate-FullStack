@@ -1,0 +1,94 @@
+package ui.components.center.TradeTable;
+
+import models.TradeHistory;
+import models.TradeOrder;
+
+import javax.swing.table.AbstractTableModel;
+import java.util.Comparator;
+import java.util.List;
+
+public class TradeOrderTableModel extends AbstractTableModel {
+
+    private final String[] columnNames = {
+            "Index", "Type", "Base", "Quote", "Price", "Amount", "Filled", "Status", "Action"
+    };
+
+    private final List<TradeOrder> data;
+
+    public TradeOrderTableModel(List<TradeOrder> tradeOrderList) {
+        tradeOrderList.sort(Comparator.comparingInt(TradeOrder::getOrderID)); // Sort by id
+        data = tradeOrderList;
+    }
+
+    @Override
+    public int getRowCount() {
+        return data.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columnNames.length;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return columnNames[column];
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        TradeOrder entry = data.get(rowIndex);
+        switch (columnIndex) {
+            case 0 -> {
+                return rowIndex + 1;
+            }
+            case 1 -> {
+                return entry.getType();
+            }
+            case 2 -> {
+                return entry.getBaseCurrency();
+            }
+            case 3 -> {
+                return entry.getQuoteCurrency();
+            }
+            case 4 -> {
+                return entry.getPrice();
+            }
+            case 5 -> {
+                return entry.getAmount();
+            }
+            case 6 -> {
+                return entry.getFilled();
+            }
+            case 7 -> {
+                return entry.getStatus();
+            }
+            default -> {
+                return 0;
+            }
+        }
+//        return data.get(row)[col];
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        // Only "Cancel" column is editable
+        return columnIndex == 8;
+    }
+
+//    @Override
+//    public void setValueAt(Object value, int row, int col) {
+//        data.get(row)[col] = value;
+//        fireTableCellUpdated(row, col);
+//    }
+
+    public Object getOrderIdAtRow(int row) {
+        return data.get(row).getOrderID();
+    }
+
+//    public void cancelOrderAtRow(int row) {
+//        // Example logic: mark status as CANCELLED
+//        data.get(row).setStatus("CANCELLED");;
+//        fireTableRowsUpdated(row, row);
+//    }
+}

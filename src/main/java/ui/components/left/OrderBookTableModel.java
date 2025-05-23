@@ -1,7 +1,8 @@
 package ui.components.left;
 
+import models.OrderBookEntry;
+
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
 import java.util.List;
 
 class OrderBookTableModel extends AbstractTableModel {

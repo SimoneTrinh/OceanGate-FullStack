@@ -6,9 +6,12 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import login.AuthDialog;
 import services.BinanceStreaming;
+import services.DBManager;
 import ui.components.center.MainCenterPanel;
 import ui.components.left.MainLeftPanel;
 import ui.components.top.MainTopPanel;
+import utils.Constants;
+import utils.LocalStorage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MainApp extends JFrame {
     private CardLayout cardLayout;
     private JPanel mainContentPanel;
+
     public MainApp() {
         // Setup giao diện app
         setTitle("Crypto Trading App");
@@ -25,6 +29,8 @@ public class MainApp extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        DBManager.connect();
+        Constants.LOCAL_STORAGE.put(LocalStorage.USER_ID, "1");
 
         AtomicBoolean loginSuccess = new AtomicBoolean(false);
 
