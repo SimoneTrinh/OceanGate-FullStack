@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 class OrderBookTableModel extends AbstractTableModel {
-    private final String[] columnNames = {"Price (USDT)", "Amount (BTC)", "Total"};
+    private final String[] columnNames = {"Price (USDT)", "Amount", "Total"};
     private final List<OrderBookEntry> data;
     public OrderBookTableModel(List<OrderBookEntry> listOrderBookEntry) {
         data = listOrderBookEntry;
@@ -44,6 +44,11 @@ class OrderBookTableModel extends AbstractTableModel {
     public String getColumnName(int column) {
         return columnNames[column];
     }
+
+//    @Override
+//    public String getColumn(int columnIndex) {
+//        return columnNames[column];
+//    }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {

@@ -16,6 +16,7 @@ import utils.LocalStorage;
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -32,7 +33,23 @@ public class MainApp extends JFrame {
 
         DBManager.connect();
 
-        UIManager.put("defaultFont", new FontUIResource("Inter", Font.PLAIN, 13));
+//        UIManager.put("defaultFont", new FontUIResource("Inter", Font.PLAIN, 13));
+
+
+        try {
+            // Load custom font from file
+            Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Binance_PLEX.ttf"))
+                    .deriveFont(12f); // Set default size
+
+            // Register the font in the graphics environment
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(customFont);
+
+
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
+
 //        FlatLaf.registerCustomDefaultsSource("themes"); // thư mục chứa FlatLaf.properties
         FlatLightLaf.setup();
         // Login

@@ -4,7 +4,7 @@ public class UIConfiguration {
     public static final int TOP_NAV_HEIGHT = 65;
     public static final int TOP_NAV_WIDTH = 0;
 
-   public static final int INFO_SYMBOL_HEIGHT = 60;
+   public static final int INFO_SYMBOL_HEIGHT = 70;
     public static final int INFO_SYMBOL_WIDTH = 0;
 
     public static final int MAIN_LEFT_WIDTH = 320;

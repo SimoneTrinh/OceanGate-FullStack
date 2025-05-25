@@ -14,6 +14,8 @@ import utils.LocalStorage;
 import utils.NumberConversion;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
         setPreferredSize(new Dimension(UIConfiguration.MAIN_LEFT_WIDTH, UIConfiguration.MAIN_LEFT_HEIGHT));
         BinanceStreaming.getInstance().addListener(this);
         setLayout(new BorderLayout());
+        setBorder(new LineBorder(Color.BLACK, 2, true));
 
         add(renderHeaderPanel(), BorderLayout.NORTH);
 
@@ -57,7 +60,7 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
     private JPanel renderHeaderPanel() {
         JPanel topPanel = new JPanel(new BorderLayout());
         JLabel titleLabel = new JLabel("Order Book");
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 16f));
         topPanel.setPreferredSize(new Dimension(0, 20));
         topPanel.add(titleLabel, BorderLayout.WEST);
         topPanel.setPreferredSize(new Dimension(0, 30));
@@ -68,7 +71,7 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
     private JTable renderOrderTable(String tableID) {
         JTable table = new JTable();
         table.setRowHeight(32);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // Modern font
+        table.setFont(table.getFont().deriveFont(Font.BOLD, 14f)); // Modern font
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         table.getSelectionModel().addListSelectionListener(e -> {
@@ -108,9 +111,13 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
     }
 
     private JPanel renderOpenPrice() {
-        JPanel panel = new JPanel(new FlowLayout());
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
         JLabel currentPrice = new JLabel("101,852.00");
+        currentPrice.setFont(currentPrice.getFont().deriveFont(Font.BOLD, 20f));
+
         JLabel currentPriceUSD = new JLabel("101,852.00");
+        currentPriceUSD.setFont(currentPrice.getFont().deriveFont(Font.PLAIN, 12f));
+
         panel.add(currentPrice);
         panel.add(currentPriceUSD);
         labelComponents.put(CURRENT_PRICE_LABEL, currentPrice);
@@ -169,6 +176,31 @@ public class MainLeftPanel extends JPanel implements BinanceStreaming.MessageLis
             listBuy.add(new OrderBookEntry(NumberConversion.convertPriceOrderBook(price), NumberConversion.convertAmountOrderBook(amount), NumberConversion.calculateTotalPrice(price, amount)));
         }
         OrderBookTableModel tableModelBuy = new OrderBookTableModel(listBuy);
+
+
         book.get(tableType).setModel(tableModelBuy);
+        if (tableType.equals(BUY_TABLE)) {
+            book.get(tableType).getColumnModel().getColumn(0).setCellRenderer(greenRenderer);
+        } else if (tableType.equals(SELL_TABLE)) {
+            book.get(tableType).getColumnModel().getColumn(0).setCellRenderer(redRenderer);
+        }
     }
+
+    DefaultTableCellRenderer redRenderer = new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            c.setForeground(Constants.COLOR_RED);  // Set text color to red
+            return c;
+        }
+    };
+
+    DefaultTableCellRenderer greenRenderer = new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            c.setForeground(Constants.COLOR_GREEN);  // Set text color to green
+            return c;
+        }
+    };
 }
