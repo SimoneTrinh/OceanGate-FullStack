@@ -10,13 +10,13 @@ public class TransactionHistoryPanel extends JPanel {
 
     public TransactionHistoryPanel() {
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+//        setBackground(Color.WHITE);
 
         // ===== Wrapper panel chứa toàn bộ nội dung =====
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        contentPanel.setBackground(new Color(245, 245, 245)); // màu nền nhẹ
+//        contentPanel.setBackground(new Color(245, 245, 245)); // màu nền nhẹ
 
         // ===== Tiêu đề =====
         JLabel title = new JLabel("History");
@@ -93,7 +93,7 @@ public class TransactionHistoryPanel extends JPanel {
     private JPanel createTransactionRow(Transaction tx) {
         JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS)); // Tránh BorderLayout để kiểm soát chặt alignment
-        row.setBackground(Color.WHITE);
+//        row.setBackground(Color.WHITE);
         row.setPreferredSize(new Dimension(700, 50));
         row.setMaximumSize(new Dimension(700, 50));
         row.setMinimumSize(new Dimension(700, 50));

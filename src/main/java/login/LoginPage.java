@@ -1,15 +1,18 @@
 package login;
+
 import com.formdev.flatlaf.FlatClientProperties;
 import controller.SessionManager;
 import models.User;
 import dataAccess.UserStore;
 import net.miginfocom.swing.MigLayout;
+import utils.Constants;
+import utils.LocalStorage;
 
 import javax.swing.*;
 import java.awt.*;
 
 
-public class LoginPage extends JPanel{
+public class LoginPage extends JPanel {
     private final JTextField txtUsername;
     private final JPasswordField txtPassword;
     private final JCheckBox chRememberme;
@@ -35,14 +38,13 @@ public class LoginPage extends JPanel{
 
                 if (username.isEmpty() || password.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter your username and password");
-                }
-                else if(UserStore.validateLogin(username, password)){
+                } else if (UserStore.validateLogin(username, password)) {
                     User user = UserStore.findByUsername(username).get();
                     SessionManager.login(user);
+                    Constants.LOCAL_STORAGE.put(LocalStorage.USER_ID, Integer.toString(user.getId()));
                     onLoginSuccess.run();
                     dialog.dispose();
-                }
-                else {
+                } else {
                     JOptionPane.showMessageDialog(null, "Invalid username or password");
                 }
             }
@@ -75,18 +77,18 @@ public class LoginPage extends JPanel{
 
         // Tạo panel khung đăng nhập
         JPanel panel = new JPanel(new MigLayout("wrap, fillx, insets 35 45 30 45", "fill, 250:280"));
-        panel.putClientProperty(FlatClientProperties.STYLE,"" +
+        panel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "arc: 20;" +
                 "[light]background:darken(@background, 3%);" +
                 "[dark]background:lighten(@background, 3%);");
 
         // Title và description của Login Page
         JLabel lbTitle = new JLabel("COIN TRADING PLATFORM");
-        lbTitle.putClientProperty(FlatClientProperties.STYLE,"" +
+        lbTitle.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font: bold +10");
 
         JLabel description = new JLabel("Sign in to access your account");
-        description.putClientProperty(FlatClientProperties.STYLE,"" +
+        description.putClientProperty(FlatClientProperties.STYLE, "" +
                 "[light]foreground:lighten(@foreground, 30%);" +
                 "[dark]foreground:darken(@foreground, 20%);");
 

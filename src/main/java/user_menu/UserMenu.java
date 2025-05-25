@@ -15,7 +15,7 @@ public class UserMenu extends JPanel {
         UIManager.put("defaultFont", new Font("Roboto", Font.PLAIN, 14));
 
         setLayout(new BorderLayout());
-        setBackground(new Color(247, 228, 236)); // trắng hồng nhẹ
+//        setBackground(new Color(247, 228, 236)); // trắng hồng nhẹ
 
         setLayout(new MigLayout("wrap 1", "[grow, fill]", "15[]20[]20[]"));
 
