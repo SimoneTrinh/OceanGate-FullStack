@@ -1,11 +1,11 @@
 package user_menu.panels;
 
-import model.UserStore;
+import controller.UserStore;
 import net.miginfocom.swing.MigLayout;
 import user_menu.components.UIUtils;
 
 import javax.swing.*;
-import model.SessionManager;
+import controller.SessionManager;
 
 import java.awt.*;
 

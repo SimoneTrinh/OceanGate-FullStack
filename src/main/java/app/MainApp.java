@@ -51,8 +51,8 @@ public class MainApp extends JFrame {
             FlatLaf.registerCustomDefaultsSource((String) null); // xóa custom source
             FlatLightLaf.setup(); // hoặc UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             // Setup giao diện Trading
-            FlatLaf.registerCustomDefaultsSource("themes"); // thư mục chứa FlatLaf.properties
-            FlatLightLaf.setup();
+//            FlatLaf.registerCustomDefaultsSource("themes"); // thư mục chứa FlatLaf.properties
+//            FlatLightLaf.setup();
             ChartHosting chart = new ChartHosting();
             try {
                 chart.init();

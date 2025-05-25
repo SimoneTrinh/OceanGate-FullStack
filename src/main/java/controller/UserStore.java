@@ -1,8 +1,9 @@
-package model;
+package controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
+import models.User;
 
 import java.io.*;
 import java.lang.reflect.Type;

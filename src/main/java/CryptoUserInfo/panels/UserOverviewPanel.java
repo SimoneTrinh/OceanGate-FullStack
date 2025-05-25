@@ -1,6 +1,6 @@
 package CryptoUserInfo.panels;
 
-import model.SessionManager;
+import controller.SessionManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

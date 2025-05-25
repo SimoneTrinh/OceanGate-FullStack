@@ -36,8 +36,8 @@ public class TradeTablePanel extends JPanel {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        orderController.loadOrders(1);
-        orderHistoryController.loadHistoryOrders(1);
+        orderController.loadOrders(2);
+        orderHistoryController.loadHistoryOrders(2);
 
         // Main layout
         setLayout(new BorderLayout());

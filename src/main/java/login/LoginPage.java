@@ -1,8 +1,8 @@
 package login;
 import com.formdev.flatlaf.FlatClientProperties;
-import model.SessionManager;
-import model.User;
-import model.UserStore;
+import controller.SessionManager;
+import models.User;
+import controller.UserStore;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

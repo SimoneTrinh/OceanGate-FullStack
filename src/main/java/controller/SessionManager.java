@@ -1,4 +1,6 @@
-package model;
+package controller;
+
+import models.User;
 
 public class SessionManager {
     private static User currentUser;

@@ -1,8 +1,8 @@
 package login;
 
 import com.formdev.flatlaf.FlatClientProperties;
-import model.User;
-import model.UserStore;
+import models.User;
+import controller.UserStore;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -123,7 +123,6 @@ public class SignupPage extends JPanel {
             // Kiểm tra xác nhận mật khẩu
             if (!password.equals(confirmPassword)) {
                 lblMessage.setText("Passwords do not match.");
-                return;
             }
             else {
                 try {

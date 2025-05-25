@@ -1,7 +1,7 @@
 package user_menu.panels;
 
-import model.SessionManager;
-import model.UserStore;
+import controller.SessionManager;
+import controller.UserStore;
 import net.miginfocom.swing.MigLayout;
 import user_menu.components.UIUtils;
 
