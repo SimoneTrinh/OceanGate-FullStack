@@ -24,7 +24,6 @@ target/
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
-/dist/
 /nbdist/
 /.nb-gradle/
 build/
@@ -38,3 +37,5 @@ build/
 .DS_Store
 jcef-bundle
 debug.log
+
+TVChart/dist/

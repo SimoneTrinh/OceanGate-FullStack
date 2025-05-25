@@ -1,49 +1,62 @@
 package models;
 
+import java.time.LocalDateTime;
+
 public class User {
-    private String firstName;
-    private String lastName;
+    private int id;
     private String username;
     private String password;
     private String email;
+    private String firstName;
+    private String lastName;
     private String phone;
+    private LocalDateTime createdAt;
 
-    public User(String firstName, String lastName, String username, String password, String email, String phone) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    // Constructor đầy đủ
+    public User(String username, String password, String email, String firstName, String lastName, String phone) {
         this.username = username;
         this.password = password;
-        this.email = email;
-        this.phone = phone;
+        setEmail(email);
+        this.firstName = firstName;
+        this.lastName = lastName;
+        setPhone(phone);
     }
 
-    // Getters và setters
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    // === Getters and Setters ===
+    public int getId() { return id; }
 
     public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) {
-        if (email != null && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+        if (email != null && email.matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
             this.email = email;
         } else {
+            System.out.println(email);
             throw new IllegalArgumentException("Invalid email format");
         }
     }
 
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
     public String getPhone() { return phone; }
     public void setPhone(String phone) {
-        if (phone != null && phone.matches("^[0-9]{9,15}$")) { // kiểm tra chỉ chứa số, độ dài từ 9–15
+        if (phone != null && phone.matches("^[0-9]{9,15}$")) {
             this.phone = phone;
         } else {
-            throw new IllegalArgumentException("Invalid phone number");
+            throw new IllegalArgumentException("Invalid phone number (9–15 digits required)");
         }
     }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

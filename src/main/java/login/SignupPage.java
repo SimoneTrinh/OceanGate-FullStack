@@ -126,16 +126,19 @@ public class SignupPage extends JPanel {
             }
             else {
                 try {
-                    User newUser = new User(firstName, lastName, userName, password, email, phone);
-                    newUser.setEmail(email);  // sẽ throw nếu email sai định dạng
-                    newUser.setPhone(phone);  // sẽ throw nếu phone sai định dạng
-                    UserStore.addUser(newUser);
+                    User newUser = new User(userName, password, email, firstName, lastName, phone);
+
+                    // Gọi setEmail/setPhone là thừa vì đã có trong constructor
+                    UserStore.addUser(newUser);  // có thể throw nếu user trùng
 
                     lblMessage.setForeground(new Color(0, 153, 0)); // xanh lá
                     lblMessage.setText("Account created successfully!");
                 } catch (IllegalArgumentException ex) {
                     lblMessage.setForeground(Color.RED);
-                    lblMessage.setText(ex.getMessage());
+                    lblMessage.setText("Invalid input: " + ex.getMessage());
+                } catch (Exception ex) {
+                    lblMessage.setForeground(Color.RED);
+                    lblMessage.setText("User already exists.");
                 }
             }
         });

@@ -88,10 +88,10 @@ INSERT INTO order_statuses (status) VALUES ('OPEN_FILLED'), ('CLOSED'), ('PARTIA
 
 -- Sample data
 
-INSERT INTO users (username, email, password, first_name, last_name)
+INSERT INTO users (username, email, password, first_name, last_name, phone)
 VALUES
-    ('alice123', 'alice@example.com', 'hashedpassword1', 'Alice', 'Nguyen'),
-    ('bob456', 'bob@example.com', 'hashedpassword2', 'Bob', 'Tran');
+    ('alice123', 'alice@example.com', 'hashedpassword1', 'Alice', 'Nguyen', '0909090909'),
+    ('bob456', 'bob@example.com', 'hashedpassword2', 'Bob', 'Tran', '0909090909');
 
 INSERT INTO currencies (code, name)
 VALUES
