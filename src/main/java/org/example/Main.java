@@ -28,6 +28,7 @@ public class Main extends JFrame {
 
         DBManager.connect();
         Constants.LOCAL_STORAGE.put(LocalStorage.USER_ID, "1");
+        Constants.LOCAL_STORAGE.put(LocalStorage.USER_BALANCE, "0");
         ChartHosting chart = new ChartHosting();
         try {
             chart.init();

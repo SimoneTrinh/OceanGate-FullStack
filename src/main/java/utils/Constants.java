@@ -32,4 +32,5 @@ public class Constants {
     public static Color COLOR_GRAY = new Color(132, 142, 156);
     public static Color COLOR_RED = new Color(246, 70, 93);
     public static Color COLOR_GREEN = new Color(46, 189, 133);
+    public static Color BTN_COLOR_DEFAULT = new Color(30, 35, 41);
 }

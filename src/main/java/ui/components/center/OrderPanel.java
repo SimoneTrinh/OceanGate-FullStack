@@ -15,10 +15,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Objects;
@@ -26,6 +23,7 @@ import java.util.Objects;
 public class OrderPanel extends JPanel {
     public static final HashMap<String, JTextField> textFields = new HashMap<>();
     public static final HashMap<String, JButton> buttons = new HashMap<>();
+    public static final HashMap<String, JLabel> labels = new HashMap<>();
     public static final HashMap<String, JComboBox<String>> comboBoxes = new HashMap<>();
     public static final String BUY_TYPE = "BUY_TYPE";
     public static final String SELL_TYPE = "SELL_TYPE";
@@ -41,6 +39,7 @@ public class OrderPanel extends JPanel {
     private String SELL_TOTAL_PRICE_FIELD = "SELL_TOTAL_PRICE_FIELD";
     private String PLACE_BUY_BTN = "PLACE_BUY_BTN";
     private String PLACE_SELL_BTN = "PLACE_SELL_BTN";
+    private String BALANCE_TXT = "BALANCE_TXT";
     private static JDialog dialog; // workaround for focus
     public static PlaceOrderController placeOrderController;
 
@@ -57,13 +56,28 @@ public class OrderPanel extends JPanel {
             throw new RuntimeException(e);
         }
 
+        String currBalanace = placeOrderController.getBalanceOfUser(Constants.LOCAL_STORAGE.get(LocalStorage.USER_ID));
+        Constants.LOCAL_STORAGE.put(LocalStorage.USER_BALANCE, currBalanace);
+
         // Main layout
         setLayout(new BorderLayout());
 
         // Navigation buttons to switch cards
         JPanel navPanel = new JPanel();
         JButton buyTabButton = new JButton("Buy");
+        buyTabButton.setBackground(Constants.COLOR_GREEN);
         JButton sellTabButton = new JButton("Sell");
+        buyTabButton.addActionListener(e -> {
+            buyTabButton.setBackground(Constants.COLOR_GREEN);  // Change color to green
+            sellTabButton.setBackground(Constants.BTN_COLOR_DEFAULT);
+        });
+
+        // Add ActionListener for Button B (turn red)
+        sellTabButton.addActionListener(e -> {
+            sellTabButton.setBackground(Constants.COLOR_RED);  // Change color to red
+            buyTabButton.setBackground(Constants.BTN_COLOR_DEFAULT);
+        });
+
         navPanel.add(buyTabButton);
         navPanel.add(sellTabButton);
         add(navPanel, BorderLayout.NORTH);
@@ -110,7 +124,7 @@ public class OrderPanel extends JPanel {
         panel.add(renderAmountBox(buyAmountField));
         panel.add(renderPercentageButtons());
         panel.add(renderTotalPrice(buyTotalPriceField));
-        panel.add(renderBalanceComponent());
+        panel.add(renderBalanceComponent(Constants.LOCAL_STORAGE.get(LocalStorage.USER_BALANCE)));
         panel.add(renderPlaceOrderButton(placeBuyBtn));
     }
 
@@ -238,22 +252,29 @@ public class OrderPanel extends JPanel {
         return jPanel;
     }
 
-    private JPanel renderBalanceComponent() {
+    private JPanel renderBalanceComponent(String balanceAmount) {
         JPanel jPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
-        JLabel availableLabel = new JLabel("Available Balance: 2.25 USDT");
+        String balance = "Available Balance: " + NumberConversion.convertAmountOrderBook(balanceAmount) + " USDT";
+        JLabel availableLabel = new JLabel();
         availableLabel.setForeground(Color.CYAN);
-        JLabel depositLabel = new JLabel("Make a Deposit");
-        depositLabel.setForeground(Color.CYAN);
+        availableLabel.setText(balance);
+        labels.put(BALANCE_TXT, availableLabel);
+
+        JButton depositButton = new JButton("Make a Deposit");
+        depositButton.setBackground(Constants.COLOR_GRAY);
+        depositButton.setForeground(Color.WHITE);
+        depositButton.addActionListener(e -> handleDeposit());
+
         jPanel.add(availableLabel);
-        jPanel.add(Box.createHorizontalStrut(15));
-        jPanel.add(depositLabel);
+        jPanel.add(Box.createHorizontalStrut(30));
+        jPanel.add(depositButton);
         return jPanel;
     }
 
     private JPanel renderPlaceOrderButton(String buttonID) {
-        JPanel jPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel jPanel = new JPanel();
         jPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
         jPanel.setOpaque(false);
@@ -261,18 +282,20 @@ public class OrderPanel extends JPanel {
 
         if (buttonID.equals(PLACE_BUY_BTN)) {
             orderButton.setText("Buy BTC");
+            orderButton.setBackground(Constants.COLOR_GREEN);
             orderButton.addActionListener(l -> {
                 performPlaceOrder("BUY");
             });
+
         } else if (buttonID.equals(PLACE_SELL_BTN)) {
+            orderButton.setBackground(Constants.COLOR_RED);
             orderButton.addActionListener(l -> {
                 performPlaceOrder("SELL");
             });
         }
         buttons.put(buttonID, orderButton);
-        orderButton.setBackground(new Color(0, 150, 0));
         orderButton.setForeground(Color.WHITE);
-        orderButton.setPreferredSize(new Dimension(400, 30));
+        orderButton.setPreferredSize(new Dimension(300, 45));
         jPanel.add(orderButton);
         return jPanel;
     }
@@ -300,7 +323,7 @@ public class OrderPanel extends JPanel {
         if (orderType.equals("BUY")) {
             price = Float.parseFloat(textFields.get(BUY_PRICE_FIELD).getText());
             amount = Float.parseFloat(textFields.get(BUY_AMOUNT_FIELD).getText());
-        }else {
+        } else {
             price = Float.parseFloat(textFields.get(SELL_PRICE_FIELD).getText());
             amount = Float.parseFloat(textFields.get(SELL_AMOUNT_FIELD).getText());
         }
@@ -313,4 +336,32 @@ public class OrderPanel extends JPanel {
         TradeTablePanel.orderHistoryController.reLoadOrders(userID);
     }
 
+    private void handleDeposit() {
+        String input = JOptionPane.showInputDialog(this, "Enter USDT amount to deposit:");
+        if (input == null || input.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Please input a valid number!");
+            return;
+        }
+        ;
+
+        try {
+            Float amount = Float.parseFloat(input);
+            if (amount <= 0) {
+                JOptionPane.showMessageDialog(this, "Amount must be greater than zero.");
+                return;
+            }
+
+            int result = placeOrderController.depositUSDT(Constants.LOCAL_STORAGE.get(LocalStorage.USER_ID), amount);
+            if (result > 0) {
+                String textAmm = NumberConversion.convertAmountOrderBook(amount.toString());
+                JOptionPane.showMessageDialog(this, "Deposited " + textAmm + " USDT.");
+                labels.get(BALANCE_TXT).setText("Available Balance: " + textAmm + " USDT");
+            } else {
+                JOptionPane.showMessageDialog(this, "Deposit failed.");
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid number.");
+        }
+    }
 }

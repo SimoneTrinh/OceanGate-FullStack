@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import controller.SessionManager;
 import models.User;
 import dataAccess.UserStore;
+import models.UserData;
 import net.miginfocom.swing.MigLayout;
 import utils.Constants;
 import utils.LocalStorage;
@@ -39,9 +40,9 @@ public class LoginPage extends JPanel {
                 if (username.isEmpty() || password.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter your username and password");
                 } else if (UserStore.validateLogin(username, password)) {
-                    User user = UserStore.findByUsername(username).get();
+                    UserData user = UserStore.findByUsername(username);
                     SessionManager.login(user);
-                    Constants.LOCAL_STORAGE.put(LocalStorage.USER_ID, Integer.toString(user.getId()));
+                    Constants.LOCAL_STORAGE.put(LocalStorage.USER_ID, user.getIdUser());
                     onLoginSuccess.run();
                     dialog.dispose();
                 } else {

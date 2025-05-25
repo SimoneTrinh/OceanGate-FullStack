@@ -67,4 +67,22 @@ public class PlaceOrderController {
             e.printStackTrace();
         }
     }
+
+    public int depositUSDT(String userID, float amount){
+        try {
+            return dao.depositUSDToUserWallet(userID, amount);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public String getBalanceOfUser(String userID){
+        try {
+            return dao.getBalanceOfUser(userID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "0";
+    }
 }

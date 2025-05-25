@@ -6,4 +6,5 @@ public class LocalStorage {
     public static String QUOTE_CURRENCY = "QUOTE_CURRENCY"; // usd
     public static String BEST_BUY = "BEST_BUY";
     public static String BEST_SELL = "BEST_SELL";
+    public static String USER_BALANCE = "USER_BALANCE";
 }
