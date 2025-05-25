@@ -3,6 +3,7 @@ package ui.components.center;
 import ui.UIConfiguration;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;

@@ -8,10 +8,7 @@ import utils.Constants;
 import utils.LocalStorage;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,7 +149,7 @@ public class OrderDAO {
     }
 
     public void updateMatchingWalletBalances(int orderID, float amount, float price,
-                                              int baseCurrencyId, int quoteCurrencyId) throws SQLException {
+                                             int baseCurrencyId, int quoteCurrencyId) throws SQLException {
 
         // Buyer's wallet: +base currency
         String sqlBuyerBase = "INSERT INTO wallet_balances (wallet_id, currency_id, amount) " +
@@ -180,4 +177,31 @@ public class OrderDAO {
 
     }
 
+    public int depositUSDToUserWallet(String userID, float amount) throws SQLException {
+        String sql = "INSERT INTO wallet_balances (wallet_id, currency_id, amount)\n" +
+                "VALUES (\n" +
+                "    (SELECT id FROM wallets WHERE user_id = ?),\n" +
+                "    (SELECT id FROM currencies WHERE code = 'USDT'),\n" +
+                "    ?\n" +
+                ")\n" +
+                "ON DUPLICATE KEY UPDATE amount = amount + VALUES(amount);";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, userID);
+        stmt.setDouble(2, amount);
+        return stmt.executeUpdate();
+    }
+
+    public String getBalanceOfUser(String userID) throws SQLException {
+        String sql = "SELECT wb.amount\n" +
+                "FROM wallet_balances wb\n" +
+                "JOIN wallets w ON wb.wallet_id = w.id\n" +
+                "JOIN currencies c ON wb.currency_id = c.id\n" +
+                "WHERE w.user_id = ? AND c.code = 'USDT';\n";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, userID);
+
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+        return rs.getString("amount");
+    }
 }

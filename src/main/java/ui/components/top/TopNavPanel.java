@@ -11,6 +11,8 @@ import utils.ResolutionInterval;
 import utils.TradingPair;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,7 +36,8 @@ public class TopNavPanel extends JPanel {
 
         // Top panel for logo, symbol dropdown, resolution dropdown, and user menu
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBorder(BorderFactory.createLineBorder(Color.RED)); // Red border for visibility
+
+        topPanel.setBorder(new LineBorder(Color.BLACK, 2, true));
 
         // Logo (left side of top panel)
         JLabel logoLabel = new JLabel("LOGO", SwingConstants.CENTER);
@@ -47,14 +50,24 @@ public class TopNavPanel extends JPanel {
         renderSymbolDropDown();
         renderIntervalDropDown();
 
-        dropdownPanel.add(new JLabel("Symbol:"));
+        JLabel symbolLabel = new JLabel("Symbol:");
+        Font currFont = symbolLabel.getFont();
+        Font newFont = currFont.deriveFont(18f);
+        symbolLabel.setForeground(Color.WHITE);
+        symbolLabel.setFont(newFont);
+
+        JLabel resolutionLabel = new JLabel("Resolution:");
+        resolutionLabel.setFont(newFont);
+
+        dropdownPanel.add(symbolLabel);
         dropdownPanel.add(symbolDropdown);
-        dropdownPanel.add(new JLabel("Resolution:"));
+        dropdownPanel.add(resolutionLabel);
         dropdownPanel.add(resolutionDropdown);
         topPanel.add(dropdownPanel, BorderLayout.CENTER);
 
         // User menu (right side of top panel)
         userMenuButton = new JButton("User Menu");
+        userMenuButton.setFont(newFont);
         userMenuButton.addActionListener(userMenuListener);
         topPanel.add(userMenuButton, BorderLayout.EAST);
         add(topPanel);

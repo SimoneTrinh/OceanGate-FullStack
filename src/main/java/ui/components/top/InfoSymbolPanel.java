@@ -4,10 +4,13 @@ import com.google.gson.JsonObject;
 import services.BinanceStreaming;
 import ui.UIConfiguration;
 import ui.components.left.MainLeftPanel;
+import utils.Constants;
 import utils.NumberConversion;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +34,13 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
     public InfoSymbolPanel(LayoutManager layout) {
         super(layout);
         this.setPreferredSize(new Dimension(UIConfiguration.INFO_SYMBOL_WIDTH, UIConfiguration.INFO_SYMBOL_HEIGHT));
-        setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+        setBorder(new LineBorder(Color.BLACK, 2, true));
+//        setBorder(new MatteBorder(0, 3, 3, 3, Color.BLACK));
+
         JPanel mainContent = new JPanel(new GridLayout());
         mainContent.setOpaque(false);
+        mainContent.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+
         BinanceStreaming.getInstance().addListener(this);
 
 
@@ -69,11 +76,11 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
 
     private void renderSymbolText(JPanel panel) {
         JLabel pairLabel = new JLabel(TopNavPanel.currentPair); // need set again when changing pair - ex: BTC/USDT
-        pairLabel.setForeground(Color.GREEN);
-        pairLabel.setFont(pairLabel.getFont().deriveFont(Font.BOLD, 16f));
+        pairLabel.setForeground(Color.WHITE);
+        pairLabel.setFont(pairLabel.getFont().deriveFont(Font.BOLD, 20f));
 
         JLabel descLabel = new JLabel("Price ↗");
-        descLabel.setForeground(Color.GRAY);
+        descLabel.setForeground(Constants.COLOR_GRAY);
         descLabel.setFont(descLabel.getFont().deriveFont(12f));
 
         controls.put(LABEL_CURRENT_SYMBOL, pairLabel);
@@ -84,13 +91,13 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
 
     private void renderPriceStat(JPanel panel) {
         JLabel firstLinePrice = new JLabel(); // need set again when changing pair
-        firstLinePrice.setForeground(Color.GREEN); // logic green when up, red when down
-        firstLinePrice.setFont(firstLinePrice.getFont().deriveFont(Font.BOLD, 16f));
+        firstLinePrice.setForeground(Constants.COLOR_GREEN); // logic green when up, red when down
+        firstLinePrice.setFont(firstLinePrice.getFont().deriveFont(Font.BOLD, 20f));
         controls.put(CURRENT_PRICE_LABEL, firstLinePrice);
 
         JLabel secondLinePrice = new JLabel();
         controls.put(CURRENT_PRICE_USD_LABEL, secondLinePrice);
-        secondLinePrice.setForeground(Color.BLACK);
+        secondLinePrice.setForeground(Color.WHITE);
         secondLinePrice.setFont(secondLinePrice.getFont().deriveFont(12f));
 
 
@@ -100,7 +107,7 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
 
     private void renderCommonStat(JPanel panel, String label, String panelID) {
         JLabel statLabel = new JLabel(label);
-        statLabel.setForeground(Color.GRAY);
+        statLabel.setForeground(Constants.COLOR_GRAY);
         statLabel.setFont(statLabel.getFont().deriveFont(12f));
         if(panelID.equals(VOLUME_PANEL_24_BASE_ASSET_VALUE)){
             controls.put(VOLUME_24_BASE_ASSET_LABEL, statLabel);
@@ -111,6 +118,7 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
         JLabel statValue = new JLabel();
         controls.put(panelID, statValue);
         statValue.setFont(statValue.getFont().deriveFont(Font.BOLD, 13f));
+        statValue.setForeground(Color.WHITE);
 
         panel.add(renderInformation(statLabel, statValue));
     }
@@ -127,10 +135,10 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
         String percentChange = jsonMessage.get("P").getAsString();
         String changeText = NumberConversion.convertStringToFloat(change) + " " + NumberConversion.convertStringToFloat(percentChange) + "%";
         if (Float.parseFloat(change) < 0) {
-            controls.get(CHANGE_PANEL_24).setForeground(Color.RED);
+            controls.get(CHANGE_PANEL_24).setForeground(Constants.COLOR_RED);
         } else if (Float.parseFloat(change) >= 0) {
             changeText = "+" + NumberConversion.convertStringToFloat(change) + " +" + NumberConversion.convertStringToFloat(percentChange) + "%";
-            controls.get(CHANGE_PANEL_24).setForeground(Color.GREEN);
+            controls.get(CHANGE_PANEL_24).setForeground(Constants.COLOR_RED);
         }
         controls.get(CHANGE_PANEL_24).setText(changeText);
 
@@ -141,12 +149,12 @@ public class InfoSymbolPanel extends JPanel implements BinanceStreaming.MessageL
 
         controls.get(CURRENT_PRICE_LABEL).setText(formattedFloatPrice);
         if (Float.parseFloat(open) < previousPrice) {
-            controls.get(CURRENT_PRICE_LABEL).setForeground(Color.RED);
-            MainLeftPanel.labelComponents.get(MainLeftPanel.CURRENT_PRICE_LABEL).setForeground(Color.RED);
+            controls.get(CURRENT_PRICE_LABEL).setForeground(Constants.COLOR_RED);
+            MainLeftPanel.labelComponents.get(MainLeftPanel.CURRENT_PRICE_LABEL).setForeground(Constants.COLOR_RED);
             controls.get(SYMBOL_DESC_LABEL).setText("Price ↘");
         } else if (Float.parseFloat(open) > previousPrice) {
-            controls.get(CURRENT_PRICE_LABEL).setForeground(Color.GREEN);
-            MainLeftPanel.labelComponents.get(MainLeftPanel.CURRENT_PRICE_LABEL).setForeground(Color.GREEN);
+            controls.get(CURRENT_PRICE_LABEL).setForeground(Constants.COLOR_GREEN);
+            MainLeftPanel.labelComponents.get(MainLeftPanel.CURRENT_PRICE_LABEL).setForeground(Constants.COLOR_GREEN);
             controls.get(SYMBOL_DESC_LABEL).setText("Price ↗");
         }
         previousPrice = Float.parseFloat(open); // set as current price

@@ -14,7 +14,9 @@ import utils.Constants;
 import utils.LocalStorage;
 
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -30,28 +32,36 @@ public class MainApp extends JFrame {
         setLocationRelativeTo(null);
 
         DBManager.connect();
-        Constants.LOCAL_STORAGE.put(LocalStorage.USER_ID, "1");
 
-        AtomicBoolean loginSuccess = new AtomicBoolean(false);
+//        UIManager.put("defaultFont", new FontUIResource("Inter", Font.PLAIN, 13));
 
+
+        try {
+            // Load custom font from file
+            Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Binance_PLEX.ttf"))
+                    .deriveFont(12f); // Set default size
+
+            // Register the font in the graphics environment
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(customFont);
+
+
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
+
+//        FlatLaf.registerCustomDefaultsSource("themes"); // thư mục chứa FlatLaf.properties
+        FlatLightLaf.setup();
         // Login
         SwingUtilities.invokeLater(() -> {
             AuthDialog authDialog = new AuthDialog(this, () -> {
-                FlatLaf.registerCustomDefaultsSource("themes"); // thư mục chứa FlatLaf.properties
-                FlatLightLaf.setup();
-                loginSuccess.set(true);
+
                 this.setVisible(true);
             });
 
             authDialog.setVisible(true);
 
-            if (!loginSuccess.get()) {
-                System.exit(0);
-            }
-            FlatLaf.registerCustomDefaultsSource((String) null); // xóa custom source
-            FlatLightLaf.setup(); // hoặc UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-            // Setup giao diện Trading
-//            FlatLaf.registerCustomDefaultsSource("themes"); // thư mục chứa FlatLaf.properties
+//            FlatLaf.registerCustomDefaultsSource((String) null); // xóa custom source
 //            FlatLightLaf.setup();
             ChartHosting chart = new ChartHosting();
             try {
@@ -62,22 +72,21 @@ public class MainApp extends JFrame {
 
             BinanceStreaming.getInstance().connect();
 
-            // CardLayout để chuyển đổi giữa các giao diện
+            // CardLayout switch panels
             cardLayout = new CardLayout();
             mainContentPanel = new JPanel(cardLayout);
             add(mainContentPanel, BorderLayout.CENTER);
 
-            // 1. Giao diện Trading chính
+            // 1. Main app
             JPanel tradingPanel = createTradingPanel();
 
-            // 2. Giao diện UserMenu
-            CryptoUserInfo userInfo = new CryptoUserInfo(e-> cardLayout.show(mainContentPanel, "TRADING"));
+            // 2. User menu
+            CryptoUserInfo userInfo = new CryptoUserInfo(e -> cardLayout.show(mainContentPanel, "TRADING"));
 
-            // Add các màn hình vào card
             mainContentPanel.add(tradingPanel, "TRADING");
             mainContentPanel.add(userInfo, "USER_MENU");
 
-            // Mặc định hiển thị trading
+            // Default
             cardLayout.show(mainContentPanel, "TRADING");
         });
     }

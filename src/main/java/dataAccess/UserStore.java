@@ -1,6 +1,7 @@
 package dataAccess;
 
 import models.User;
+import models.UserData;
 import services.DBManager;
 
 import java.math.BigDecimal;
@@ -10,21 +11,26 @@ import java.util.Optional;
 public class UserStore {
     private static final Connection connection = DBManager.getConnection();
 
-    public static Optional<User> findByUsername(String username) {
+    public static UserData findByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
-        try {
-            assert connection != null;
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, username);
-                ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    return Optional.of(mapResultSetToUser(rs));
-                }
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            ResultSetMetaData mt = rs.getMetaData();
+            if (rs.next()) {
+                UserData data = new UserData(rs.getString("id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("email"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("phone"));
+                return data;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return Optional.empty();
+        return null;
     }
 
     public static boolean validateLogin(String username, String password) {
@@ -136,4 +142,5 @@ public class UserStore {
                 rs.getString("phone")
         );
     }
+
 }

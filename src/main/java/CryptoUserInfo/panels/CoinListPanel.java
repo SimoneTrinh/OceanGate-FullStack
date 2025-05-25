@@ -10,7 +10,7 @@ import java.util.Map;
 public class CoinListPanel extends JPanel {
     public CoinListPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBackground(Color.WHITE);
+//        setBackground(Color.WHITE);
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Map coin name => [USD value, market price, quantity]
@@ -36,7 +36,7 @@ public class CoinListPanel extends JPanel {
         JPanel row = new JPanel(new BorderLayout());
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
         row.setMaximumSize(new Dimension(350, 60));
-        row.setBackground(Color.WHITE);
+//        row.setBackground(Color.WHITE);
         row.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         // Icon and name
