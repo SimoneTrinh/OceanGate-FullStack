@@ -84,8 +84,8 @@ public class LoginPage extends JPanel {
                 "[dark]background:lighten(@background, 3%);");
 
         // Title và description của Login Page
-        JLabel lbTitle = new JLabel("COIN TRADING PLATFORM");
-        lbTitle.putClientProperty(FlatClientProperties.STYLE, "" +
+        JLabel lbTitle = new JLabel("TRADING PLATFORM");
+        lbTitle.putClientProperty(FlatClientProperties.STYLE,"" +
                 "font: bold +10");
 
         JLabel description = new JLabel("Sign in to access your account");
