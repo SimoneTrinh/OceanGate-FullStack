@@ -2,7 +2,7 @@ package login;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import models.User;
-import controller.UserStore;
+import dataAccess.UserStore;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

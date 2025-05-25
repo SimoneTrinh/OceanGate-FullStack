@@ -50,10 +50,10 @@ public class User {
 
     public String getPhone() { return phone; }
     public void setPhone(String phone) {
-        if (phone != null && phone.matches("^[0-9]{9,15}$")) {
+        if (phone != null && phone.matches("^[0-9]{10,12}$")) {
             this.phone = phone;
         } else {
-            throw new IllegalArgumentException("Invalid phone number (9–15 digits required)");
+            throw new IllegalArgumentException("Invalid phone number (10-12 digits required)");
         }
     }
 

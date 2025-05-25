@@ -1,6 +1,6 @@
 package user_menu.panels;
 
-import controller.UserStore;
+import dataAccess.UserStore;
 import net.miginfocom.swing.MigLayout;
 import user_menu.components.UIUtils;
 
